@@ -106,6 +106,7 @@ public class Game implements Runnable {
 
 			/* In game over state */
 			case GAMEOVER:
+				System.out.println("Your score is " + (int)(elapsedTicks/60));
 				main.repaint();
 				break;
 
