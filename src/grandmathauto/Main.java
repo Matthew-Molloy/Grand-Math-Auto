@@ -12,6 +12,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class Main extends Applet implements KeyListener, MouseListener {
 	static final int windowWidth = 800;
@@ -223,6 +224,30 @@ public class Main extends Applet implements KeyListener, MouseListener {
 	@Override
 	public void keyReleased(KeyEvent e) {
 		if (game.getState() == STATE.GAME) {
+			char c = e.getKeyChar();
+			if (game.mathProblemActive == true && c >= '0' && c <= '9') {
+				if( c == game.result.get(game.mathIndex)) {
+					System.out.println(game.result.size() - 1);
+					System.out.println(game.mathIndex);
+					if( game.result.size() - 1 == game.mathIndex ) {
+						game.problem = "Correct!";
+						game.mathIndex = 0;
+						game.mathSchemeTracker = 300;
+						game.result = new ArrayList<>();
+						game.mathProblemActive = false;
+						System.out.println("Correct!");
+					}
+					else {
+						game.mathIndex++;
+					}
+				}
+				else {
+					game.problem = "Oops!";
+					game.mathProblemActive = false;
+					game.result = new ArrayList<>();
+					game.mathSchemeTracker = 300;
+				}
+			}
 			switch (e.getKeyCode()) {
 			case KeyEvent.VK_UP:
 				game.getPlayer().stopUp();

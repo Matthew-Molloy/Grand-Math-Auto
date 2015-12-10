@@ -5,7 +5,7 @@ public class Car {
 	static final int height = 64;
 
 	private int positionX = 0, positionY = 0;
-	private int speedX = 6, speedY = 6;
+	private int speedX = 5, speedY = 5;
 
 	private boolean movingLeft = false, movingRight = false, movingUp = false, movingDown = false;
 

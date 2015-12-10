@@ -27,10 +27,27 @@ public class Game implements Runnable {
 	private int obstacleSchemeTracker = 0; // used to track what step in the
 											// scheme is currently needed
 	private int timeBetweenObstacles = 0;
+	
+	// math stuff
+	public int mathScheme = 0;
+	public int mathSchemeTracker = 0;
+	public boolean mathProblemActive = false;
+	public boolean correct = false;
+	public int mathIndex = 0;
+	public String problem;
+	public ArrayList<Character> result = new ArrayList<>();
 
 	private long nextGameTick = 0;
 	private long elapsedTicks = 0;
 	private long sleepTime = 0;
+	
+	//Server stuff
+	private Server server;
+	private int dataCheck = 5;
+	private boolean serverCheck = true;
+	
+	//Sensor stuff
+	private boolean menuCheck = true;
 	
 	public ArrayList<ConeObstacle> obstacleList = new ArrayList<>();
 
@@ -61,6 +78,13 @@ public class Game implements Runnable {
 			/* In main menu */
 			case MAIN:
 				main.repaint();
+				if(serverCheck) {
+					// Start server thread to listen for sensor input
+					server = new Server();
+					new Thread(server).start();
+					serverCheck = false;
+				}
+				checkSensorMenu();
 				break;
 
 			/* In game state */
@@ -73,7 +97,14 @@ public class Game implements Runnable {
 					elapsedTicks = 0;
 					obstacleScheme = 0;
 					obstacleSchemeTracker = 0;
+					mathSchemeTracker = 0;
 					timeBetweenObstacles = 180;
+					mathScheme = 0;
+					mathSchemeTracker = 0;
+					mathProblemActive = false;
+					correct = false;
+					mathIndex = 0;
+					result = new ArrayList<>();
 					obstacleList = new ArrayList<>();
 					bg1 = new Background(0, 0);
 					bg2 = new Background(0, 512);
@@ -85,9 +116,11 @@ public class Game implements Runnable {
 
 				/* Update game object physics and repaint scene */
 				player.update();
+				checkSensor();
 				bg1.update();
 				bg2.update();
 				handleObstacles();
+				handleMath();
 				main.repaint();
 				elapsedTicks++;
 
@@ -106,7 +139,6 @@ public class Game implements Runnable {
 
 			/* In game over state */
 			case GAMEOVER:
-				System.out.println("Your score is " + (int)(elapsedTicks/60));
 				main.repaint();
 				break;
 
@@ -139,6 +171,50 @@ public class Game implements Runnable {
 			}
 		}
 	}
+	
+	public void checkSensor() {
+		Float data = server.currentData;
+		if(data != null) {
+			// neutral movement
+			if(data >= -dataCheck && data <= dataCheck) {
+				player.stopLeft();
+				player.stopRight();
+			}
+			// right movement
+			else if(data > dataCheck) {
+				player.moveRight();
+			}
+			// left movement
+			else if(data < -dataCheck) {
+				player.moveLeft();
+			}
+		}
+	}
+	
+	public void checkSensorMenu() {
+		Float data = server.currentData;
+		if(data != null) {
+			int index;
+			// neutral movement
+			if(data >= -dataCheck && data <= dataCheck) {
+				menuCheck = true;
+			}
+			// right movement
+			else if(data > dataCheck && menuCheck == true) {
+				index = getMainIndex();
+				index++;
+				setMainIndex(index);
+				menuCheck = false;
+			}
+			// left movement
+			else if(data < -dataCheck && menuCheck == true) {
+				index = getMainIndex();
+				index--;
+				setMainIndex(index);
+				menuCheck = false;
+			}
+		}
+	}
 
 	/**
 	 * Generates driving challenges for the player in the car portion of the
@@ -153,7 +229,6 @@ public class Game implements Runnable {
 			if (obstacleSchemeTracker < 0) {
 				obstacleScheme = 1 + rand.nextInt(2);
 				obstacleSchemeTracker = 180;
-				System.out.println(obstacleScheme);
 			}
 			break;
 
@@ -207,6 +282,74 @@ public class Game implements Runnable {
 		}
 		
 		obstacleSchemeTracker--;
+	}
+	
+	private void handleMath() {
+		Random rand = new Random();
+		
+		switch (mathScheme) {
+		case 0:
+			if (mathSchemeTracker < 0 && mathProblemActive == false) {
+				mathScheme = 1;
+				mathProblemActive = true;
+			}
+			break;
+			
+		case 1:
+			problem = "";
+			String temp;
+			int x, y, operator, r;
+			x = 1 + rand.nextInt(8);
+			y = 1 + rand.nextInt(8);
+			operator = 1 + rand.nextInt(3);
+			problem += (Integer.toString(x));
+			switch(operator) {
+			case 1:
+				problem += (" + " + Integer.toString(y));
+				r = x + y;
+				temp = Integer.toString(r);
+				for( int i = 0; i < temp.length(); i++ ) {
+					result.add(temp.charAt(i));
+				}
+				System.out.println(problem);
+				break;
+			case 2:
+				while(x - y < 0) {
+					problem = "";
+					x = 1 + rand.nextInt(8);
+					y = 1 + rand.nextInt(8);
+					operator = 1 + rand.nextInt(3);
+					problem += (Integer.toString(x));
+				}
+				problem += (" - " + Integer.toString(y));
+				r = x - y;
+				temp = Integer.toString(r);
+				for( int i = 0; i < temp.length(); i++ ) {
+					result.add(temp.charAt(i));
+				}
+				System.out.println(problem);
+				break;
+			case 3:
+				problem += (" * " + Integer.toString(y));
+				r = x * y;
+				temp = Integer.toString(r);
+				for( int i = 0; i < temp.length(); i++ ) {
+					result.add(temp.charAt(i));
+				}
+				System.out.println(problem);
+				break;
+				
+			default:
+				break;
+			}
+			
+			mathScheme = 0;
+			break;
+			
+		default:
+			break;
+		}
+		mathSchemeTracker -= 1;
 	}
 
 	public Boolean getFirstRun() {

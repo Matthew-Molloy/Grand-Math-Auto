@@ -124,6 +124,10 @@ public class GraphicsManager {
 				g.drawImage(currentSprite, game.getPlayer().getPositionX(),
 						game.getPlayer().getPositionY(), main);
 				
+				if (game.problem != null) {
+					g.drawString(game.problem, 600, 40);	
+				}
+				
 				for (Iterator<ConeObstacle> iterator = game.obstacleList.iterator(); iterator.hasNext();) {
 					ConeObstacle cone = iterator.next();
 					if (cone.getPositionY() > Main.windowHeight + ConeObstacle.height) {
