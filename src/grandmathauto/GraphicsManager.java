@@ -29,9 +29,6 @@ public class GraphicsManager {
 
    public GraphicsManager(Main main) throws ClassNotFoundException {
 
-      scores.add("1000");
-      scores.add("800");
-      scores.add("25");
 
       this.main = main;
 

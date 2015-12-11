@@ -66,6 +66,8 @@ public class Game implements Runnable {
    private int mainIndex = 0, optionIndex = 0, skillIndex = 0;
 
    private STATE State = STATE.CONNECTION;
+   
+   private HighscoreManager highScores = new HighscoreManager();
 
    public Game(Main main) {
       this.main = main;
