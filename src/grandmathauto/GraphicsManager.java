@@ -147,6 +147,10 @@ public class GraphicsManager {
                         cone.getPositionY(), main);
                }
             }
+            
+            if (!game.isAddition() && !game.isSubtraction() && !game.isMultiplcation()) {
+            	g.drawString("No math", 600, 40);
+            }
          }
          break;
 
