@@ -57,6 +57,7 @@ public class GraphicsManager {
       // Fonts, Title & Options
       Font font1 = new Font("Helvetica", Font.BOLD, 75);
       Font font2 = new Font("Helvetica", Font.BOLD, 50);
+      Font font3 = new Font("Helvetica", Font.BOLD, 25);
 
       switch (game.getState()) {
       /* In main menu */
@@ -275,6 +276,8 @@ public class GraphicsManager {
          y = (d.height / 2) - fm.getHeight();
 
          g.drawImage(connect, x, y, main);
+         
+         
 
          break;
 
@@ -298,6 +301,10 @@ public class GraphicsManager {
 
             g.drawString(levelOptions[index], x, y);
 
+         }
+         
+         if (game.badSkillSelect == true) {
+        	 g.drawString("You must select a skill level.", 60, 450);
          }
 
          if (game.isAddition()) {
@@ -342,7 +349,6 @@ public class GraphicsManager {
             g.drawImage(leftArrow, 435, 360, main);
          }
          break;
-         
       case GAMEOVER:
     	  g.setFont(font1);
           g.setColor(Color.white);
@@ -359,6 +365,36 @@ public class GraphicsManager {
           g.drawString(Integer.toString(game.score), x, 260);
           g.drawString(gameOver[2], x - 100, 320);
           g.drawString(game.playerName, x , 380);
+          break;
+
+      case INSTRUCTIONS:
+    	  g.setFont(font1);
+          g.setColor(Color.white);
+          
+          fm = g.getFontMetrics();
+          x = (d.width / 2) - (fm.stringWidth(levelOptions[0]) / 2) + 80;
+          y = 75;
+    	  
+          g.drawString("Instructions", x, y);
+          
+          g.setFont(font3);
+          g.setColor(Color.white);
+          x += 5;
+          
+          y += 100;
+          g.drawString("Use enter to select a menu option", x, y);
+          y += 50;
+          g.drawString("Rotate your wrist to steer your car", x, y);
+          y += 50;
+          g.drawString("Solve the math problems by typing", x, y);
+          y += 25;
+          g.drawString("the answer in order to slow the game down", x, y);
+          y += 50;
+          g.drawString("Use the arrow keys to navigate the menus", x, y);
+          y += 50;
+          g.drawString("Press enter to go to the main menu", x, y);
+          y += 50;
+    	  break;
       default:
          break;
 

@@ -54,14 +54,16 @@ public class Game implements Runnable {
    private Server server;
    private int dataCheck = 5;
    private boolean serverCheck = true;
-
+   
    // Sensor stuff
    private boolean menuCheck = true;
 
+   public boolean badSkillSelect = false;
+   
    public ArrayList<ConeObstacle> obstacleList = new ArrayList<>();
 
    public enum STATE {
-      MAIN, GAME, GAMEOVER, OPTIONS, SCORES, CREDITS, CONNECTION, SKILL_LEVEL, QUIT
+      MAIN, GAME, GAMEOVER, OPTIONS, SCORES, CREDITS, CONNECTION, SKILL_LEVEL, QUIT, INSTRUCTIONS
    };
 
    private STATE[] mainArr = { STATE.SKILL_LEVEL, STATE.OPTIONS, STATE.SCORES,
@@ -89,12 +91,6 @@ public class Game implements Runnable {
          /* In main menu */
          case MAIN:
             main.repaint();
-            if (serverCheck) {
-               // Start server thread to listen for sensor input
-               server = new Server();
-               new Thread(server).start();
-               serverCheck = false;
-            }
             checkSensorMenu();
             break;
 
@@ -127,7 +123,7 @@ public class Game implements Runnable {
                bg1 = new Background(0, 0);
                bg2 = new Background(0, 512);
                player = new Car(3 * Main.windowWidth / 8,
-                     Main.windowHeight - 100);
+                     Main.windowHeight - 70);
                nextGameTick = System.currentTimeMillis();
                firstRun = false;
             }
@@ -182,6 +178,12 @@ minSpeed++;
 
          case CONNECTION:
             main.repaint();
+            if (serverCheck) {
+                // Start server thread to listen for sensor input
+                server = new Server(this);
+                new Thread(server).start();
+                serverCheck = false;
+             }
             break;
 
          // Select a skill level before playing game
@@ -189,6 +191,10 @@ minSpeed++;
             main.repaint();
             break;
 
+         case INSTRUCTIONS:
+        	 main.repaint();
+        	 break;
+            
          /* Close applet */
          case QUIT:
             running = false;
@@ -222,18 +228,18 @@ minSpeed++;
       if (data != null) {
          int index;
          // neutral movement
-         if (data >= -dataCheck && data <= dataCheck) {
+         if (data >= -3 && data <= 3) {
             menuCheck = true;
          }
          // right movement
-         else if (data > dataCheck && menuCheck == true) {
+         else if (data > 8 && menuCheck == true) {
             index = getMainIndex();
             index++;
             setMainIndex(index);
             menuCheck = false;
          }
          // left movement
-         else if (data < -dataCheck && menuCheck == true) {
+         else if (data < -8 && menuCheck == true) {
             index = getMainIndex();
             index--;
             setMainIndex(index);
@@ -549,8 +555,10 @@ minSpeed++;
       // BGM
       case 1:
          if (bgmOn) {
+        	 //main.bgm.stop();
             bgmOn = false;
          } else {
+        	 //main.bgm.play();
             bgmOn = true;
          }
          break;
@@ -601,7 +609,10 @@ minSpeed++;
 	         skillIndex = 0;
 	         State = STATE.GAME;
     	  }
-         break;
+    	  else {
+    		  badSkillSelect = true;
+    	  }
+    	  break;
       }
    }
 
