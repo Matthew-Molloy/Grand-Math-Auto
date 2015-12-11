@@ -117,7 +117,7 @@ public class Game implements Runnable {
                bg1 = new Background(0, 0);
                bg2 = new Background(0, 512);
                player = new Car(3 * Main.windowWidth / 8,
-                     Main.windowHeight - 100);
+                     Main.windowHeight - 70);
                nextGameTick = System.currentTimeMillis();
                firstRun = false;
             }
