@@ -6,11 +6,14 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class GraphicsManager {
    static public Image image, currentSprite, playerImage, backgroundImage,
-         debugDot, leftArrow, rightArrow, checkMark, checkBox, coneImage;
+         debugDot, leftArrow, rightArrow, checkMark, checkBox, coneImage,
+         connect;
 
    private Main main;
 
@@ -19,11 +22,14 @@ public class GraphicsManager {
    private String[] optOptions = { "Sound Effects", "Background Music",
          "Back" };
    private String[] levelOptions = { "Select Skill Level", "Addition",
-         "Subtraction", "Multiplication", "Division", "Start Game" };
+         "Subtraction", "Multiplication", "Start Game" };
    private String[] names = { "Matthew Molloy", "Jennifer Tang", "Ricky Yu" };
-   private String connection = "Connecting to Android Wear Device";
+   private List<String> scores = new ArrayList<String>();
+   private int size;
 
-   public GraphicsManager(Main main) {
+   public GraphicsManager(Main main) throws ClassNotFoundException {
+
+
       this.main = main;
 
       /* Import sprites into application */
@@ -37,6 +43,8 @@ public class GraphicsManager {
       checkMark = main.getImage(main.getBase(), "data/check.png");
       checkBox = main.getImage(main.getBase(), "data/box.png");
       coneImage = main.getImage(main.getBase(), "data/cone.png");
+      connect = main.getImage(main.getBase(), "data/connecting.png");
+
    }
 
    public void paint(Graphics g) {
@@ -160,7 +168,7 @@ public class GraphicsManager {
 
          for (index = 0; index < 2; index++) {
             y = 250 + (60 * index);
-            
+
             x = (d.width / 2) - 300;
 
             g.drawString(optOptions[index], x, y);
@@ -170,7 +178,6 @@ public class GraphicsManager {
          x = (d.width / 2) - (fm.stringWidth(optOptions[2]) / 2);
          g.drawString(optOptions[2], x, 370);
 
-         System.out.println(game.isSoundOn());
          if (game.isSoundOn()) {
             g.drawImage(checkMark, 600, 218, main);
          }
@@ -186,7 +193,7 @@ public class GraphicsManager {
          else {
             g.drawImage(checkBox, 600, 278, main);
          }
-         
+
          // Move selection arrow
          switch (game.getOptionIndex()) {
          case 0:
@@ -213,7 +220,18 @@ public class GraphicsManager {
 
          g.drawString(menuOptions[3], x, y);
 
-         // DATABASE
+         g.setFont(font2);
+         fm = g.getFontMetrics();
+
+         size = scores.size();
+
+         for (index = 0; index < size; index++) {
+            y = 250 + (60 * index);
+            x = (d.width / 2) - 300;
+
+            g.drawString(scores.get(index), x + 200, y);
+         }
+
          break;
 
       case CREDITS:
@@ -247,6 +265,12 @@ public class GraphicsManager {
          y = 100;
 
          g.drawString(menuOptions[0], x, y);
+
+         x = (d.width / 2) - (connect.getWidth(main) / 2);
+         y = (d.height / 2) - fm.getHeight();
+
+         g.drawImage(connect, x, y, main);
+
          break;
 
       case SKILL_LEVEL:
@@ -258,6 +282,60 @@ public class GraphicsManager {
          y = 100;
 
          g.drawString(levelOptions[0], x, y);
+
+         // Display level options
+         g.setFont(font2);
+         fm = g.getFontMetrics();
+
+         for (index = 1; index < 5; index++) {
+            y = 150 + (60 * index);
+            x = (d.width / 2) - 250;
+
+            g.drawString(levelOptions[index], x, y);
+
+         }
+
+         if (game.isAddition()) {
+            g.drawImage(checkMark, 580, 175, main);
+         }
+
+         else {
+            g.drawImage(checkBox, 580, 175, main);
+         }
+
+         if (game.isSubtraction()) {
+            g.drawImage(checkMark, 580, 235, main);
+         }
+
+         else {
+            g.drawImage(checkBox, 580, 235, main);
+         }
+         
+         if (game.isMultiplcation()) {
+            g.drawImage(checkMark, 580, 295, main);
+         }
+
+         else {
+            g.drawImage(checkBox, 580, 295, main);
+         }
+         
+         // Move selection arrow
+         switch (game.getSkillIndex()) {
+         case 0:
+            g.drawImage(leftArrow, 630, 175, main);
+            break;
+
+         case 1:
+            g.drawImage(leftArrow, 630, 235, main);
+            break;
+
+         case 2:
+            g.drawImage(leftArrow, 630, 295, main);
+            break;
+            
+         case 3:
+            g.drawImage(leftArrow, 435, 360, main);
+         }
          break;
 
       default:
