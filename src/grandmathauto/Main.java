@@ -3,6 +3,7 @@ package grandmathauto;
 import grandmathauto.Game.STATE;
 
 import java.applet.Applet;
+import java.applet.AudioClip;
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Graphics;
@@ -23,6 +24,7 @@ public class Main extends Applet implements KeyListener, MouseListener {
    private URL base;
    private Graphics second;
    private Color bg = new Color(87, 172, 242);
+   public AudioClip bgm;
    static public GraphicsManager graphicsManager;
 
    private Game game;
@@ -40,6 +42,8 @@ public class Main extends Applet implements KeyListener, MouseListener {
       addMouseListener(this);
       Frame frame = (Frame) this.getParent().getParent();
       frame.setTitle("Grand Math Auto");
+      
+      
 
       /* Initialize game bitmaps */
       try {
@@ -47,6 +51,8 @@ public class Main extends Applet implements KeyListener, MouseListener {
       } catch (Exception e) {
          e.printStackTrace();
       }
+      bgm = getAudioClip(base, "data/bgm2.mp3");
+      bgm.play();
 
       try {
 		graphicsManager = new GraphicsManager(this);

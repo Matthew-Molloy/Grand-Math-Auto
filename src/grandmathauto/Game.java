@@ -546,8 +546,10 @@ System.out.println("Your score is " + (int)(elapsedTicks/60));
       // BGM
       case 1:
          if (bgmOn) {
+        	 main.bgm.stop();
             bgmOn = false;
          } else {
+        	 main.bgm.play();
             bgmOn = true;
          }
          break;

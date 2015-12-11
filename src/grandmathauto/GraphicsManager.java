@@ -368,6 +368,8 @@ public class GraphicsManager {
           y += 25;
           g.drawString("the answer in order to slow the game down", x, y);
           y += 50;
+          g.drawString("Use the arrow keys to navigate the menus", x, y);
+          y += 50;
           g.drawString("Press enter to go to the main menu", x, y);
           y += 50;
     	  break;
