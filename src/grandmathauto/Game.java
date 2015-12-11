@@ -353,55 +353,64 @@ System.out.println("Your score is " + (int)(elapsedTicks/60));
 			if (mathSchemeTracker < 0 && mathProblemActive == false) {
 				mathScheme = 1;
 				mathIndex = 0;
-				mathProblemActive = true;
 			}
 			break;
 			
 		case 1:
-			problem = "";
-			String temp;
-			int x, y, operator, r;
-			x = 1 + rand.nextInt(8);
-			y = 1 + rand.nextInt(8);
-			operator = 1 + rand.nextInt(3);
-			problem += (Integer.toString(x));
-			switch(operator) {
-			case 1:
-				problem += (" + " + Integer.toString(y));
-				r = x + y;
-				temp = Integer.toString(r);
-				for( int i = 0; i < temp.length(); i++ ) {
-					result.add(temp.charAt(i));
+			while (!mathProblemActive) {
+				problem = "";
+				String temp;
+				int x, y, operator, r;
+				x = 1 + rand.nextInt(8);
+				y = 1 + rand.nextInt(8);
+				operator = 1 + rand.nextInt(3);
+				problem += (Integer.toString(x));
+				switch(operator) {
+				case 1:
+					if (addition) {
+						problem += (" + " + Integer.toString(y));
+						r = x + y;
+						temp = Integer.toString(r);
+						for (int i = 0; i < temp.length(); i++) {
+							result.add(temp.charAt(i));
+						} 
+						mathProblemActive = true;
+					}
+					break;
+				case 2:
+					if (subtraction) {
+						while (x - y < 0) {
+							problem = "";
+							x = 1 + rand.nextInt(8);
+							y = 1 + rand.nextInt(8);
+							operator = 1 + rand.nextInt(3);
+							problem += (Integer.toString(x));
+						}
+						problem += (" - " + Integer.toString(y));
+						r = x - y;
+						temp = Integer.toString(r);
+						for (int i = 0; i < temp.length(); i++) {
+							result.add(temp.charAt(i));
+						} 
+						mathProblemActive = true;
+					}
+					break;
+				case 3:
+					if (multiplication) {
+						problem += (" * " + Integer.toString(y));
+						r = x * y;
+						temp = Integer.toString(r);
+						for (int i = 0; i < temp.length(); i++) {
+							result.add(temp.charAt(i));
+						} 
+						mathProblemActive = true;
+					}
+					break;
+					
+				default:
+					break;
 				}
-				break;
-			case 2:
-				while(x - y < 0) {
-					problem = "";
-					x = 1 + rand.nextInt(8);
-					y = 1 + rand.nextInt(8);
-					operator = 1 + rand.nextInt(3);
-					problem += (Integer.toString(x));
-				}
-				problem += (" - " + Integer.toString(y));
-				r = x - y;
-				temp = Integer.toString(r);
-				for( int i = 0; i < temp.length(); i++ ) {
-					result.add(temp.charAt(i));
-				}
-				break;
-			case 3:
-				problem += (" * " + Integer.toString(y));
-				r = x * y;
-				temp = Integer.toString(r);
-				for( int i = 0; i < temp.length(); i++ ) {
-					result.add(temp.charAt(i));
-				}
-				break;
-				
-			default:
-				break;
-			}
-			
+			}			
 			mathScheme = 0;
 			break;
 			
