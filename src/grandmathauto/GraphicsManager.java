@@ -296,6 +296,10 @@ public class GraphicsManager {
             g.drawString(levelOptions[index], x, y);
 
          }
+         
+         if (game.badSkillSelect == true) {
+        	 g.drawString("You must select a skill level.", 60, 450);
+         }
 
          if (game.isAddition()) {
             g.drawImage(checkMark, 580, 175, main);

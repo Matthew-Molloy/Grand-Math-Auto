@@ -55,6 +55,8 @@ public class Game implements Runnable {
    // Sensor stuff
    private boolean menuCheck = true;
 
+   public boolean badSkillSelect = false;
+   
    public ArrayList<ConeObstacle> obstacleList = new ArrayList<>();
 
    public enum STATE {
@@ -591,8 +593,11 @@ System.out.println("Your score is " + (int)(elapsedTicks/60));
 	         skillDisplay = false;
 	         skillIndex = 0;
 	         State = STATE.GAME;
-	         break;
     	  }
+    	  else {
+    		  badSkillSelect = true;
+    	  }
+    	  break;
       }
    }
 
