@@ -4,558 +4,560 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Game implements Runnable {
-	final int FRAMES_PER_SECOND = 60;
-	final int SKIP_TICKS = 1000 / FRAMES_PER_SECOND;
+   final int FRAMES_PER_SECOND = 60;
+   final int SKIP_TICKS = 1000 / FRAMES_PER_SECOND;
 
-	private Main main;
-	private Car player;
-	private Background bg1, bg2;
-	
-	private boolean addition = false, subtraction = false, multiplication = false;
-	
-	private boolean soundOn = true;
-	private boolean bgmOn = true;
-	
-	private boolean scoreDisplay = false;
-	private boolean creditDisplay = false;
-	private boolean optionsDisplay = false;
+   private Main main;
+   private Car player;
+   private Background bg1, bg2;
 
-	private boolean firstRun = true;
-	private boolean running = true;
+   private boolean addition = false, subtraction = false,
+         multiplication = false;
 
-	private int obstacleScheme = 0; // used to determine what obstacle pattern
-									// to generate in handleObstacles()
-	private int obstacleSchemeTracker = 0; // used to track what step in the
-											// scheme is currently needed
-	private int timeBetweenObstacles = 0;
-	
-	// math stuff
-	public int mathScheme = 0;
-	public int mathSchemeTracker = 0;
-	public boolean mathProblemActive = false;
-	public boolean correct = false;
-	public int mathIndex = 0;
-	public String problem;
-	public ArrayList<Character> result = new ArrayList<>();
+   private boolean soundOn = true;
+   private boolean bgmOn = true;
 
-	private long nextGameTick = 0;
-	private long elapsedTicks = 0;
-	private long sleepTime = 0;
-	
-	//Server stuff
-	private Server server;
-	private int dataCheck = 5;
-	private boolean serverCheck = true;
-	
-	//Sensor stuff
-	private boolean menuCheck = true;
-	
-	public ArrayList<ConeObstacle> obstacleList = new ArrayList<>();
+   private boolean scoreDisplay = false;
+   private boolean creditDisplay = false;
+   private boolean optionsDisplay = false;
+   private boolean skillDisplay = false;
 
-	public enum STATE {
-		MAIN, GAME, GAMEOVER, OPTIONS, SCORES, CREDITS, CONNECTION, SKILL_LEVEL, QUIT
-	};
+   private boolean firstRun = true;
+   private boolean running = true;
 
-	private STATE[] mainArr = { STATE.SKILL_LEVEL, STATE.OPTIONS, STATE.SCORES,
-			STATE.CREDITS, STATE.QUIT };
+   private int obstacleScheme = 0; // used to determine what obstacle pattern
+   // to generate in handleObstacles()
+   private int obstacleSchemeTracker = 0; // used to track what step in the
+   // scheme is currently needed
+   private int timeBetweenObstacles = 0;
 
-	private int[] optionArr = { 0, 1, 2 }, skillArr = { 0, 1, 2, 3 };
+   // math stuff
+   public int mathScheme = 0;
+   public int mathSchemeTracker = 0;
+   public boolean mathProblemActive = false;
+   public boolean correct = false;
+   public int mathIndex = 0;
+   public String problem;
+   public ArrayList<Character> result = new ArrayList<>();
 
-	private int mainIndex = 0, optionIndex = 0, skillIndex = 0;
+   private long nextGameTick = 0;
+   private long elapsedTicks = 0;
+   private long sleepTime = 0;
 
-	private STATE State = STATE.CONNECTION;
+   // Server stuff
+   private Server server;
+   private int dataCheck = 5;
+   private boolean serverCheck = true;
 
-	public Game(Main main) {
-		this.main = main;
-	}
+   // Sensor stuff
+   private boolean menuCheck = true;
 
-	/**
-	 * Execute run when creating a new thread
-	 */
-	@Override
-	public void run() {
-		while (running) {
-			switch (State) {
-			/* In main menu */
-			case MAIN:
-				main.repaint();
-				if(serverCheck) {
-					// Start server thread to listen for sensor input
-					server = new Server();
-					new Thread(server).start();
-					serverCheck = false;
-				}
-				checkSensorMenu();
-				break;
+   public ArrayList<ConeObstacle> obstacleList = new ArrayList<>();
 
-			/* In game state */
-			case GAME:
-				/*
-				 * On the first tick of the game, initialize game objects and
-				 * variables
-				 */
-				if (firstRun) {
-					elapsedTicks = 0;
-					obstacleScheme = 0;
-					obstacleSchemeTracker = 0;
-					mathSchemeTracker = 0;
-					timeBetweenObstacles = 180;
-					mathScheme = 0;
-					mathSchemeTracker = 0;
-					mathProblemActive = false;
-					correct = false;
-					mathIndex = 0;
-					result = new ArrayList<>();
-					obstacleList = new ArrayList<>();
-					bg1 = new Background(0, 0);
-					bg2 = new Background(0, 512);
-					player = new Car(3 * Main.windowWidth / 8,
-							Main.windowHeight - 100);
-					nextGameTick = System.currentTimeMillis();
-					firstRun = false;
-				}
+   public enum STATE {
+      MAIN, GAME, GAMEOVER, OPTIONS, SCORES, CREDITS, CONNECTION, SKILL_LEVEL, QUIT
+   };
 
-				/* Update game object physics and repaint scene */
-				player.update();
-				checkSensor();
-				bg1.update();
-				bg2.update();
-				handleObstacles();
-				handleMath();
-				main.repaint();
-				elapsedTicks++;
+   private STATE[] mainArr = { STATE.SKILL_LEVEL, STATE.OPTIONS, STATE.SCORES,
+         STATE.CREDITS, STATE.QUIT };
 
-				/* Update 60 frames per second */
-				nextGameTick += SKIP_TICKS;
-				sleepTime = nextGameTick - System.currentTimeMillis();
-				if (sleepTime >= 0) {
-					try {
-						Thread.sleep(sleepTime);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
+   private int[] optionArr = { 0, 1, 2 }, skillArr = { 0, 1, 2, 3 };
 
-				break;
+   private int mainIndex = 0, optionIndex = 0, skillIndex = 0;
 
-			/* In game over state */
-			case GAMEOVER:
-				main.repaint();
-				break;
+   private STATE State = STATE.CONNECTION;
 
-			case OPTIONS:
-				main.repaint();
-				break;
+   public Game(Main main) {
+      this.main = main;
+   }
 
-			case SCORES:
-				main.repaint();
-				break;
+   /**
+    * Execute run when creating a new thread
+    */
+   @Override
+   public void run() {
+      while (running) {
+         switch (State) {
+         /* In main menu */
+         case MAIN:
+            main.repaint();
+            if (serverCheck) {
+               // Start server thread to listen for sensor input
+               server = new Server();
+               new Thread(server).start();
+               serverCheck = false;
+            }
+            checkSensorMenu();
+            break;
 
-			case CREDITS:
-				main.repaint();
-				break;
+         /* In game state */
+         case GAME:
+            /*
+             * On the first tick of the game, initialize game objects and
+             * variables
+             */
+            if (firstRun) {
+               elapsedTicks = 0;
+               obstacleScheme = 0;
+               obstacleSchemeTracker = 0;
+               mathSchemeTracker = 0;
+               timeBetweenObstacles = 180;
+               mathScheme = 0;
+               mathSchemeTracker = 0;
+               mathProblemActive = false;
+               correct = false;
+               mathIndex = 0;
+               result = new ArrayList<>();
+               obstacleList = new ArrayList<>();
+               bg1 = new Background(0, 0);
+               bg2 = new Background(0, 512);
+               player = new Car(3 * Main.windowWidth / 8,
+                     Main.windowHeight - 100);
+               nextGameTick = System.currentTimeMillis();
+               firstRun = false;
+            }
 
-			case CONNECTION:
-				main.repaint();
-				break;
+            /* Update game object physics and repaint scene */
+            player.update();
+            checkSensor();
+            bg1.update();
+            bg2.update();
+            handleObstacles();
+            handleMath();
+            main.repaint();
+            elapsedTicks++;
 
-			// Select a skill level before playing game
-			case SKILL_LEVEL:
-				State = STATE.GAME;
-				break;
+            /* Update 60 frames per second */
+            nextGameTick += SKIP_TICKS;
+            sleepTime = nextGameTick - System.currentTimeMillis();
+            if (sleepTime >= 0) {
+               try {
+                  Thread.sleep(sleepTime);
+               } catch (InterruptedException e) {
+                  e.printStackTrace();
+               }
+            }
 
-			/* Close applet */
-			case QUIT:
-				running = false;
-				System.exit(0);
-				break;
-			}
-		}
-	}
-	
-	public void checkSensor() {
-		Float data = server.currentData;
-		if(data != null) {
-			// neutral movement
-			if(data >= -dataCheck && data <= dataCheck) {
-				player.stopLeft();
-				player.stopRight();
-			}
-			// right movement
-			else if(data > dataCheck) {
-				player.moveRight();
-			}
-			// left movement
-			else if(data < -dataCheck) {
-				player.moveLeft();
-			}
-		}
-	}
-	
-	public void checkSensorMenu() {
-		Float data = server.currentData;
-		if(data != null) {
-			int index;
-			// neutral movement
-			if(data >= -dataCheck && data <= dataCheck) {
-				menuCheck = true;
-			}
-			// right movement
-			else if(data > dataCheck && menuCheck == true) {
-				index = getMainIndex();
-				index++;
-				setMainIndex(index);
-				menuCheck = false;
-			}
-			// left movement
-			else if(data < -dataCheck && menuCheck == true) {
-				index = getMainIndex();
-				index--;
-				setMainIndex(index);
-				menuCheck = false;
-			}
-		}
-	}
+            break;
 
-	/**
-	 * Generates driving challenges for the player in the car portion of the
-	 * game.
-	 */
-	private void handleObstacles() {
-		Random rand = new Random();
-		
-		switch (obstacleScheme) {
-		case 0: // No obstacles
-			/* Generate new obstacle */
-			if (obstacleSchemeTracker < 0) {
-				obstacleScheme = 1 + rand.nextInt(2);
-				obstacleSchemeTracker = 180;
-			}
-			break;
+         /* In game over state */
+         case GAMEOVER:
+            main.repaint();
+            break;
 
-		case 1: // 5 random cones
-			if (obstacleSchemeTracker % 36 == 0) {
-				int xPosition = rand.nextInt((Background.roadBarrierRight-ConeObstacle.width) - Background.roadBarrierLeft) + Background.roadBarrierLeft;
-				ConeObstacle cone = new ConeObstacle(xPosition, -ConeObstacle.height);
-				obstacleList.add(cone);
-			}
+         case OPTIONS:
+            main.repaint();
+            break;
 
-			if (obstacleSchemeTracker < 0) {
-				obstacleScheme = 0;
-				obstacleSchemeTracker = timeBetweenObstacles;
-			}
-			break;
-			
-		case 2: // 3 horizontal line of cones
-			if (obstacleSchemeTracker % 60 == 0) {
-				int xPosition = rand.nextInt((Background.roadBarrierRight-(ConeObstacle.width * 5)) - Background.roadBarrierLeft) + Background.roadBarrierLeft;
-				ConeObstacle cone = new ConeObstacle(xPosition, -ConeObstacle.height);
-				ConeObstacle cone1 = new ConeObstacle(xPosition + ConeObstacle.width, -ConeObstacle.height);
-				ConeObstacle cone2 = new ConeObstacle(xPosition + (2*ConeObstacle.width), -ConeObstacle.height);
-				ConeObstacle cone3 = new ConeObstacle(xPosition + (3*ConeObstacle.width), -ConeObstacle.height);
-				ConeObstacle cone4 = new ConeObstacle(xPosition + (4*ConeObstacle.width), -ConeObstacle.height);
-				obstacleList.add(cone);
-				obstacleList.add(cone1);
-				obstacleList.add(cone2);
-				obstacleList.add(cone3);
-				obstacleList.add(cone4);
-			}
-			
-			if (obstacleSchemeTracker < 0) {
-				obstacleScheme = 0;
-				obstacleSchemeTracker = timeBetweenObstacles;
-			}
-		default:
-			break;
-		}
-		
-		/* Update cones */
-		for (ConeObstacle cone: obstacleList) {
-			/* Check Collisions */
-			if (cone.getPositionX() < player.getPositionX() + Car.width &&
-					cone.getPositionX() + ConeObstacle.width > player.getPositionX() &&
-					cone.getPositionY() < player.getPositionY() + Car.height &&
-					cone.getPositionY() + ConeObstacle.height > player.getPositionY()) {
-				State = STATE.GAMEOVER;
-			}
-			
-			cone.update();
-		}
-		
-		obstacleSchemeTracker--;
-	}
-	
-	private void handleMath() {
-		Random rand = new Random();
-		
-		switch (mathScheme) {
-		case 0:
-			if (mathSchemeTracker < 0 && mathProblemActive == false) {
-				mathScheme = 1;
-				mathProblemActive = true;
-			}
-			break;
-			
-		case 1:
-			problem = "";
-			String temp;
-			int x, y, operator, r;
-			x = 1 + rand.nextInt(8);
-			y = 1 + rand.nextInt(8);
-			operator = 1 + rand.nextInt(3);
-			problem += (Integer.toString(x));
-			switch(operator) {
-			case 1:
-				problem += (" + " + Integer.toString(y));
-				r = x + y;
-				temp = Integer.toString(r);
-				for( int i = 0; i < temp.length(); i++ ) {
-					result.add(temp.charAt(i));
-				}
-				System.out.println(problem);
-				break;
-			case 2:
-				while(x - y < 0) {
-					problem = "";
-					x = 1 + rand.nextInt(8);
-					y = 1 + rand.nextInt(8);
-					operator = 1 + rand.nextInt(3);
-					problem += (Integer.toString(x));
-				}
-				problem += (" - " + Integer.toString(y));
-				r = x - y;
-				temp = Integer.toString(r);
-				for( int i = 0; i < temp.length(); i++ ) {
-					result.add(temp.charAt(i));
-				}
-				System.out.println(problem);
-				break;
-			case 3:
-				problem += (" * " + Integer.toString(y));
-				r = x * y;
-				temp = Integer.toString(r);
-				for( int i = 0; i < temp.length(); i++ ) {
-					result.add(temp.charAt(i));
-				}
-				System.out.println(problem);
-				break;
-				
-			default:
-				break;
-			}
-			
-			mathScheme = 0;
-			break;
-			
-		default:
-			break;
-		}
-		mathSchemeTracker -= 1;
-	}
+         case SCORES:
+            main.repaint();
+            break;
 
-	public Boolean getFirstRun() {
-		return firstRun;
-	}
+         case CREDITS:
+            main.repaint();
+            break;
 
-	public void setFirstRun(Boolean firstRun) {
-		this.firstRun = firstRun;
-	}
+         case CONNECTION:
+            main.repaint();
+            break;
 
-	public Background getBg1() {
-		return bg1;
-	}
+         // Select a skill level before playing game
+         case SKILL_LEVEL:
+            main.repaint();
+            break;
 
-	public Background getBg2() {
-		return bg2;
-	}
+         /* Close applet */
+         case QUIT:
+            running = false;
+            System.exit(0);
+            break;
+         }
+      }
+   }
 
-	public Car getPlayer() {
-		return player;
-	}
+   public void checkSensor() {
+      Float data = server.currentData;
+      if (data != null) {
+         // neutral movement
+         if (data >= -dataCheck && data <= dataCheck) {
+            player.stopLeft();
+            player.stopRight();
+         }
+         // right movement
+         else if (data > dataCheck) {
+            player.moveRight();
+         }
+         // left movement
+         else if (data < -dataCheck) {
+            player.moveLeft();
+         }
+      }
+   }
 
-	public STATE getState() {
-		return State;
-	}
+   public void checkSensorMenu() {
+      Float data = server.currentData;
+      if (data != null) {
+         int index;
+         // neutral movement
+         if (data >= -dataCheck && data <= dataCheck) {
+            menuCheck = true;
+         }
+         // right movement
+         else if (data > dataCheck && menuCheck == true) {
+            index = getMainIndex();
+            index++;
+            setMainIndex(index);
+            menuCheck = false;
+         }
+         // left movement
+         else if (data < -dataCheck && menuCheck == true) {
+            index = getMainIndex();
+            index--;
+            setMainIndex(index);
+            menuCheck = false;
+         }
+      }
+   }
 
-	public void setState(STATE newState) {
-		State = newState;
-		if(State == STATE.SCORES)
-		{
-			scoreDisplay = true;
-		}
-		if(State == STATE.CREDITS)
-		{
-			creditDisplay = true;
-		}
-		
-	}
+   /**
+    * Generates driving challenges for the player in the car portion of the
+    * game.
+    */
+   private void handleObstacles() {
+      Random rand = new Random();
 
-	public int getMainIndex() {
-		return mainIndex;
-	}
+      switch (obstacleScheme) {
+      case 0: // No obstacles
+         /* Generate new obstacle */
+         if (obstacleSchemeTracker < 0) {
+            obstacleScheme = 1 + rand.nextInt(2);
+            obstacleSchemeTracker = 180;
+         }
+         break;
 
-	public int getOptionIndex() {
-		return optionIndex;
-	}
+      case 1: // 5 random cones
+         if (obstacleSchemeTracker % 36 == 0) {
+            int xPosition = rand
+                  .nextInt((Background.roadBarrierRight - ConeObstacle.width)
+                        - Background.roadBarrierLeft)
+                  + Background.roadBarrierLeft;
+            ConeObstacle cone = new ConeObstacle(xPosition,
+                  -ConeObstacle.height);
+            obstacleList.add(cone);
+         }
 
-	public int getSkillIndex() {
-		return skillIndex;
-	}
+         if (obstacleSchemeTracker < 0) {
+            obstacleScheme = 0;
+            obstacleSchemeTracker = timeBetweenObstacles;
+         }
+         break;
 
-	public void setMainIndex(int val) {
-		// Loops the main menu array
-		if (val < 0) {
-			mainIndex = 4;
-		} else if (val > 4) {
-			mainIndex = 0;
-		} else {
-			mainIndex = val;
-		}
-	}
+      case 2: // 3 horizontal line of cones
+         if (obstacleSchemeTracker % 60 == 0) {
+            int xPosition = rand.nextInt(
+                  (Background.roadBarrierRight - (ConeObstacle.width * 5))
+                        - Background.roadBarrierLeft)
+                  + Background.roadBarrierLeft;
+            ConeObstacle cone = new ConeObstacle(xPosition,
+                  -ConeObstacle.height);
+            ConeObstacle cone1 = new ConeObstacle(
+                  xPosition + ConeObstacle.width, -ConeObstacle.height);
+            ConeObstacle cone2 = new ConeObstacle(
+                  xPosition + (2 * ConeObstacle.width), -ConeObstacle.height);
+            ConeObstacle cone3 = new ConeObstacle(
+                  xPosition + (3 * ConeObstacle.width), -ConeObstacle.height);
+            ConeObstacle cone4 = new ConeObstacle(
+                  xPosition + (4 * ConeObstacle.width), -ConeObstacle.height);
+            obstacleList.add(cone);
+            obstacleList.add(cone1);
+            obstacleList.add(cone2);
+            obstacleList.add(cone3);
+            obstacleList.add(cone4);
+         }
 
-	public void setOptionIndex(int val) {
-		if (val < 0) {
-			optionIndex = 2;
-		} else if (val > 2) {
-			optionIndex = 0;
-		} else {
-			optionIndex = val;
-		}
-	}
+         if (obstacleSchemeTracker < 0) {
+            obstacleScheme = 0;
+            obstacleSchemeTracker = timeBetweenObstacles;
+         }
+      default:
+         break;
+      }
 
-	public void setSkillIndex(int val) {
-		if (val < 0) {
-			skillIndex = 3;
-		} else if (val > 3) {
-			skillIndex = 0;
-		} else {
-			skillIndex = val;
-		}
-	}
+      /* Update cones */
+      for (ConeObstacle cone : obstacleList) {
+         /* Check Collisions */
+         if (cone.getPositionX() < player.getPositionX() + Car.width
+               && cone.getPositionX() + ConeObstacle.width > player
+                     .getPositionX()
+               && cone.getPositionY() < player.getPositionY() + Car.height
+               && cone.getPositionY() + ConeObstacle.height > player
+                     .getPositionY()) {
+            State = STATE.GAMEOVER;
+         }
 
-	public STATE getMainArr(int index) {
-		return mainArr[index];
-	}
+         cone.update();
+      }
 
-	public int getOptionArr(int index) {
-		return optionArr[index];
-	}
+      obstacleSchemeTracker--;
+   }
 
-	public int getSkillArr(int index) {
-		return skillArr[index];
-	}
+   private void handleMath() {
+      Random rand = new Random();
 
-	public boolean isBgmOn() {
-		return bgmOn;
-	}
+      switch (mathScheme) {
+      case 0:
+         if (mathSchemeTracker < 0 && mathProblemActive == false) {
+            mathScheme = 1;
+            mathProblemActive = true;
+         }
+         break;
 
-	public void setBgmOn(boolean bgmOn) {
-		this.bgmOn = bgmOn;
-	}
+      case 1:
+         problem = "";
+         String temp;
+         int x, y, operator, r;
+         x = 1 + rand.nextInt(8);
+         y = 1 + rand.nextInt(8);
+         operator = 1 + rand.nextInt(3);
+         problem += (Integer.toString(x));
+         switch (operator) {
+         case 1:
+            problem += (" + " + Integer.toString(y));
+            r = x + y;
+            temp = Integer.toString(r);
+            for (int i = 0; i < temp.length(); i++) {
+               result.add(temp.charAt(i));
+            }
+            System.out.println(problem);
+            break;
+         case 2:
+            while (x - y < 0) {
+               problem = "";
+               x = 1 + rand.nextInt(8);
+               y = 1 + rand.nextInt(8);
+               operator = 1 + rand.nextInt(3);
+               problem += (Integer.toString(x));
+            }
+            problem += (" - " + Integer.toString(y));
+            r = x - y;
+            temp = Integer.toString(r);
+            for (int i = 0; i < temp.length(); i++) {
+               result.add(temp.charAt(i));
+            }
+            System.out.println(problem);
+            break;
+         case 3:
+            problem += (" * " + Integer.toString(y));
+            r = x * y;
+            temp = Integer.toString(r);
+            for (int i = 0; i < temp.length(); i++) {
+               result.add(temp.charAt(i));
+            }
+            System.out.println(problem);
+            break;
 
-	public boolean isSoundOn() {
-		return soundOn;
-	}
+         default:
+            break;
+         }
 
-	public void setSoundOn(boolean soundOn) {
-		this.soundOn = soundOn;
-	}
-	
-	public void setOptions(){
-		switch(optionIndex){
-		
-		// Sound
-		case 0:
-			if(soundOn)
-			{
-				soundOn = false;
-			}
-			else
-			{
-				soundOn = true;
-			}
-			break;
-			
-		// BGM	
-		case 1:
-			if(bgmOn)
-			{
-				bgmOn = false;
-			}
-			else
-			{
-				bgmOn = true;
-			}
-			break;
-		
-		// Back
-		case 2:
-			State = STATE.MAIN;
-			break;
-		}
-	}
-	
-	public void setLevel(){
-		switch(skillIndex){
-		
-		// Addition
-		case 0:
-			if(addition)
-			{
-				addition = false;
-			}
-			else
-			{
-				addition = true;
-			}
-			break;
-		
-		// Subtraction
-		case 1:
-			if(subtraction)
-			{
-				subtraction = false;
-			}
-			else
-			{
-				subtraction = true;
-			}
-			break;
-		
-		// Multiplication
-		case 2:
-			if(multiplication)
-			{
-				multiplication = false;
-			}
-			else
-			{
-				multiplication = true;
-			}
-			break;
-		
-		// Start Game
-		case 4:
-			State = STATE.GAME;
-			break;
-		}
-	}
+         mathScheme = 0;
+         break;
 
-	public boolean isScoreDisplay() {
-		return scoreDisplay;
-	}
+      default:
+         break;
+      }
+      mathSchemeTracker -= 1;
+   }
 
-	public void setScoreDisplay(boolean scoreDisplay) {
-		this.scoreDisplay = scoreDisplay;
-	}
+   public Boolean getFirstRun() {
+      return firstRun;
+   }
 
-	public boolean isCreditDisplay() {
-		return creditDisplay;
-	}
+   public void setFirstRun(Boolean firstRun) {
+      this.firstRun = firstRun;
+   }
 
-	public void setCreditDisplay(boolean creditDisplay) {
-		this.creditDisplay = creditDisplay;
-	}
+   public Background getBg1() {
+      return bg1;
+   }
+
+   public Background getBg2() {
+      return bg2;
+   }
+
+   public Car getPlayer() {
+      return player;
+   }
+
+   public STATE getState() {
+      return State;
+   }
+
+   public void setState(STATE newState) {
+      State = newState;
+      if (State == STATE.SCORES) {
+         scoreDisplay = true;
+      }
+      if (State == STATE.CREDITS) {
+         creditDisplay = true;
+      }
+   }
+
+   public int getMainIndex() {
+      return mainIndex;
+   }
+
+   public int getOptionIndex() {
+      return optionIndex;
+   }
+
+   public int getSkillIndex() {
+      return skillIndex;
+   }
+
+   public void setMainIndex(int val) {
+      // Loops the main menu array
+      if (val < 0) {
+         mainIndex = 4;
+      } else if (val > 4) {
+         mainIndex = 0;
+      } else {
+         mainIndex = val;
+      }
+   }
+
+   public void setOptionIndex(int val) {
+      if (val < 0) {
+         optionIndex = 2;
+      } else if (val > 2) {
+         optionIndex = 0;
+      } else {
+         optionIndex = val;
+      }
+   }
+
+   public void setSkillIndex(int val) {
+      if (val < 0) {
+         skillIndex = 3;
+      } else if (val > 3) {
+         skillIndex = 0;
+      } else {
+         skillIndex = val;
+      }
+   }
+
+   public STATE getMainArr(int index) {
+      return mainArr[index];
+   }
+
+   public int getOptionArr(int index) {
+      return optionArr[index];
+   }
+
+   public int getSkillArr(int index) {
+      return skillArr[index];
+   }
+
+   public boolean isBgmOn() {
+      return bgmOn;
+   }
+
+   public void setBgmOn(boolean bgmOn) {
+      this.bgmOn = bgmOn;
+   }
+
+   public boolean isSoundOn() {
+      return soundOn;
+   }
+
+   public void setSoundOn(boolean soundOn) {
+      this.soundOn = soundOn;
+   }
+
+   public void setOptions() {
+      switch (optionIndex) {
+
+      // Sound
+      case 0:
+         if (soundOn && optionsDisplay) {
+            soundOn = false;
+         } else {
+            soundOn = true;
+         }
+         break;
+
+      // BGM
+      case 1:
+         if (bgmOn) {
+            bgmOn = false;
+         } else {
+            bgmOn = true;
+         }
+         break;
+
+      // Back
+      case 2:
+         optionsDisplay = false;
+         optionIndex = 0;
+         State = STATE.MAIN;
+         break;
+      }
+   }
+
+   public void setLevel() {
+      switch (skillIndex) {
+
+      // Addition
+      case 0:
+         if (addition && skillDisplay) {
+            addition = false;
+         } else {
+            addition = true;
+         }
+         break;
+
+      // Subtraction
+      case 1:
+         if (subtraction) {
+            subtraction = false;
+         } else {
+            subtraction = true;
+         }
+         break;
+
+      // Multiplication
+      case 2:
+         if (multiplication) {
+            multiplication = false;
+         } else {
+            multiplication = true;
+         }
+         break;
+
+      // Start Game
+      case 3:
+         skillDisplay = false;
+         skillIndex = 0;
+         State = STATE.GAME;
+         break;
+      }
+   }
+
+   public boolean isScoreDisplay() {
+      return scoreDisplay;
+   }
+
+   public void setScoreDisplay(boolean scoreDisplay) {
+      this.scoreDisplay = scoreDisplay;
+   }
+
+   public boolean isCreditDisplay() {
+      return creditDisplay;
+   }
+
+   public void setCreditDisplay(boolean creditDisplay) {
+      this.creditDisplay = creditDisplay;
+   }
 
    public boolean isOptionsDisplay() {
       return optionsDisplay;
@@ -564,4 +566,27 @@ public class Game implements Runnable {
    public void setOptionsDisplay(boolean optionsDisplay) {
       this.optionsDisplay = optionsDisplay;
    }
+   
+   public boolean isSkillDisplay() {
+      return skillDisplay;
+   }
+
+   public void setSkillDisplay(boolean skillDisplay) {
+      this.skillDisplay = skillDisplay;
+   }
+   
+   public boolean isAddition() {
+      return addition;
+   }
+
+   public boolean isSubtraction() {
+      return subtraction;
+   }
+
+   public boolean isMultiplcation() {
+      return multiplication;
+   }
+   
+
+
 }
