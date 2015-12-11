@@ -183,11 +183,11 @@ public class Main extends Applet implements KeyListener, MouseListener {
 			case KeyEvent.VK_ENTER:
 				index = game.getOptionIndex();
 				game.setOptions();
-	         System.out.println("moo");
+				System.out.println("moo");
 				break;
 			case KeyEvent.VK_SPACE:
 				index = game.getOptionIndex();
-	         System.out.println("moo");
+				System.out.println("moo");
 				game.setOptions();
 			case KeyEvent.VK_ESCAPE:
 				game.setState(STATE.MAIN);

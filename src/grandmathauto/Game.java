@@ -6,6 +6,7 @@ import java.util.Random;
 public class Game implements Runnable {
 	final int FRAMES_PER_SECOND = 60;
 	final int SKIP_TICKS = 1000 / FRAMES_PER_SECOND;
+	static int speed = 0;
 
 	private Main main;
 	private Car player;
@@ -37,6 +38,7 @@ public class Game implements Runnable {
 	public String problem;
 	public ArrayList<Character> result = new ArrayList<>();
 
+	// timing 
 	private long nextGameTick = 0;
 	private long elapsedTicks = 0;
 	private long sleepTime = 0;
@@ -104,6 +106,7 @@ public class Game implements Runnable {
 					mathProblemActive = false;
 					correct = false;
 					mathIndex = 0;
+					speed = 5;
 					result = new ArrayList<>();
 					obstacleList = new ArrayList<>();
 					bg1 = new Background(0, 0);
@@ -123,6 +126,11 @@ public class Game implements Runnable {
 				handleMath();
 				main.repaint();
 				elapsedTicks++;
+				
+				/* graudally increase difficulty */
+				if (elapsedTicks % 600 ==0) {
+					speed++;
+				}
 
 				/* Update 60 frames per second */
 				nextGameTick += SKIP_TICKS;
@@ -227,10 +235,6 @@ public class Game implements Runnable {
 		case 0: // No obstacles
 			/* Generate new obstacle */
 			if (obstacleSchemeTracker < 0) {
-				
-				if (timeBetweenObstacles > 60) {
-					timeBetweenObstacles -= 10;	
-				}
 				obstacleScheme = 1 + rand.nextInt(2);
 				obstacleSchemeTracker = timeBetweenObstacles;
 

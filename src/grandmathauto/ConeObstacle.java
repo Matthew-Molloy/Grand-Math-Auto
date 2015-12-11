@@ -13,6 +13,7 @@ public class ConeObstacle {
 	}
 
 	public void update() {
+		speedY = Game.speed;
 		this.positionY += speedY; // Move cone downward
 	}
 

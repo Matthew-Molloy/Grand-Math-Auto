@@ -14,6 +14,7 @@ public class Background {
 	}
 
 	public void update() {
+		speedY = Game.speed;
 		bgY += speedY;
 
 		if (bgY >= 512) {
