@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "/Users/matthewmolloy/Downloads/wearable-message-api-example-master/mobile/build/intermediates/res/merged/debug/raw/gtm_analytics",
+        "source": "/Users/matthewmolloy/Downloads/wearable-message-api-example-master/mobile/build/intermediates/exploded-aar/com.google.android.gms/play-services/6.5.87/res/raw/gtm_analytics"
+    },
+    {
+        "merged": "/Users/matthewmolloy/AndroidStudioProjects/GrandMathAuto/mobile/build/intermediates/res/merged/debug/raw/gtm_analytics",
+        "source": "/Users/matthewmolloy/AndroidStudioProjects/GrandMathAuto/mobile/build/intermediates/exploded-aar/com.google.android.gms/play-services/6.5.87/res/raw/gtm_analytics"
+    }
+]

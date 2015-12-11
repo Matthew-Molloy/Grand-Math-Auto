@@ -1,8 +1,8 @@
 package grandmathauto;
 
 public class ConeObstacle {
-	static final int width = 44;
-	static final int height = 44;
+	static final int width = 40;
+	static final int height = 40;
 
 	private int positionX = 0, positionY = 0;
 	private int speedX = 5, speedY = 5;
@@ -13,6 +13,7 @@ public class ConeObstacle {
 	}
 
 	public void update() {
+		speedY = Game.speed;
 		this.positionY += speedY; // Move cone downward
 	}
 

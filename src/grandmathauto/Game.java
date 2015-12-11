@@ -129,6 +129,14 @@ public class Game implements Runnable {
             main.repaint();
             elapsedTicks++;
 
+/* gradually increase difficulty */
+if (elapsedTicks % 240 == 0) {
+speed++;	
+if (elapsedTicks % 1200 == 0) {
+minSpeed++;
+}
+}
+
             /* Update 60 frames per second */
             nextGameTick += SKIP_TICKS;
             sleepTime = nextGameTick - System.currentTimeMillis();
@@ -144,6 +152,7 @@ public class Game implements Runnable {
 
          /* In game over state */
          case GAMEOVER:
+System.out.println("Your score is " + (int)(elapsedTicks/60));
             main.repaint();
             break;
 
@@ -222,154 +231,178 @@ public class Game implements Runnable {
    }
 
    /**
-    * Generates driving challenges for the player in the car portion of the
-    * game.
-    */
-   private void handleObstacles() {
-      Random rand = new Random();
+	 * Generates driving challenges for the player in the car portion of the
+	 * game.
+	 */
+	private void handleObstacles() {
+		Random rand = new Random();
+		
+		switch (obstacleScheme) {
+		case 0: // No obstacles			
+			/* Generate new obstacle */
+			if (obstacleSchemeTracker < 0) {
+				System.out.println("Speed/MinSpeed: " + Game.speed + "/" + Game.minSpeed);
+				obstacleScheme = 1 + rand.nextInt(3);
+				obstacleSchemeTracker = timeBetweenObstacles;
+			}
+			break;
 
-      switch (obstacleScheme) {
-      case 0: // No obstacles
-         /* Generate new obstacle */
-         if (obstacleSchemeTracker < 0) {
-            obstacleScheme = 1 + rand.nextInt(2);
-            obstacleSchemeTracker = 180;
-         }
-         break;
+		case 1: // 8 random cones
+			if (obstacleSchemeTracker % (int)(timeBetweenObstacles / 8) == 0) {
+				int xPosition = rand.nextInt((Background.roadBarrierRight-ConeObstacle.width) - Background.roadBarrierLeft) + Background.roadBarrierLeft;
+				ConeObstacle cone = new ConeObstacle(xPosition, -ConeObstacle.height);
+				obstacleList.add(cone);
+			}
 
-      case 1: // 5 random cones
-         if (obstacleSchemeTracker % 36 == 0) {
-            int xPosition = rand
-                  .nextInt((Background.roadBarrierRight - ConeObstacle.width)
-                        - Background.roadBarrierLeft)
-                  + Background.roadBarrierLeft;
-            ConeObstacle cone = new ConeObstacle(xPosition,
-                  -ConeObstacle.height);
-            obstacleList.add(cone);
-         }
-
-         if (obstacleSchemeTracker < 0) {
-            obstacleScheme = 0;
-            obstacleSchemeTracker = timeBetweenObstacles;
-         }
-         break;
-
-      case 2: // 3 horizontal line of cones
-         if (obstacleSchemeTracker % 60 == 0) {
-            int xPosition = rand.nextInt(
-                  (Background.roadBarrierRight - (ConeObstacle.width * 5))
-                        - Background.roadBarrierLeft)
-                  + Background.roadBarrierLeft;
-            ConeObstacle cone = new ConeObstacle(xPosition,
-                  -ConeObstacle.height);
-            ConeObstacle cone1 = new ConeObstacle(
-                  xPosition + ConeObstacle.width, -ConeObstacle.height);
-            ConeObstacle cone2 = new ConeObstacle(
-                  xPosition + (2 * ConeObstacle.width), -ConeObstacle.height);
-            ConeObstacle cone3 = new ConeObstacle(
-                  xPosition + (3 * ConeObstacle.width), -ConeObstacle.height);
-            ConeObstacle cone4 = new ConeObstacle(
-                  xPosition + (4 * ConeObstacle.width), -ConeObstacle.height);
-            obstacleList.add(cone);
-            obstacleList.add(cone1);
-            obstacleList.add(cone2);
-            obstacleList.add(cone3);
-            obstacleList.add(cone4);
-         }
-
-         if (obstacleSchemeTracker < 0) {
-            obstacleScheme = 0;
-            obstacleSchemeTracker = timeBetweenObstacles;
-         }
-      default:
-         break;
-      }
-
-      /* Update cones */
-      for (ConeObstacle cone : obstacleList) {
-         /* Check Collisions */
-         if (cone.getPositionX() < player.getPositionX() + Car.width
-               && cone.getPositionX() + ConeObstacle.width > player
-                     .getPositionX()
-               && cone.getPositionY() < player.getPositionY() + Car.height
-               && cone.getPositionY() + ConeObstacle.height > player
-                     .getPositionY()) {
-            State = STATE.GAMEOVER;
-         }
-
-         cone.update();
-      }
-
-      obstacleSchemeTracker--;
-   }
-
-   private void handleMath() {
-      Random rand = new Random();
-
-      switch (mathScheme) {
-      case 0:
-         if (mathSchemeTracker < 0 && mathProblemActive == false) {
-            mathScheme = 1;
-            mathProblemActive = true;
-         }
-         break;
-
-      case 1:
-         problem = "";
-         String temp;
-         int x, y, operator, r;
-         x = 1 + rand.nextInt(8);
-         y = 1 + rand.nextInt(8);
-         operator = 1 + rand.nextInt(3);
-         problem += (Integer.toString(x));
-         switch (operator) {
-         case 1:
-            problem += (" + " + Integer.toString(y));
-            r = x + y;
-            temp = Integer.toString(r);
-            for (int i = 0; i < temp.length(); i++) {
-               result.add(temp.charAt(i));
-            }
-            System.out.println(problem);
-            break;
-         case 2:
-            while (x - y < 0) {
-               problem = "";
-               x = 1 + rand.nextInt(8);
-               y = 1 + rand.nextInt(8);
-               operator = 1 + rand.nextInt(3);
-               problem += (Integer.toString(x));
-            }
-            problem += (" - " + Integer.toString(y));
-            r = x - y;
-            temp = Integer.toString(r);
-            for (int i = 0; i < temp.length(); i++) {
-               result.add(temp.charAt(i));
-            }
-            System.out.println(problem);
-            break;
-         case 3:
-            problem += (" * " + Integer.toString(y));
-            r = x * y;
-            temp = Integer.toString(r);
-            for (int i = 0; i < temp.length(); i++) {
-               result.add(temp.charAt(i));
-            }
-            System.out.println(problem);
-            break;
-
-         default:
-            break;
-         }
-
-         mathScheme = 0;
-         break;
-
-      default:
-         break;
-      }
-      mathSchemeTracker -= 1;
-   }
+			if (obstacleSchemeTracker < 0) {
+				obstacleScheme = 0;
+				obstacleSchemeTracker = timeBetweenObstacles;
+			}
+			break;
+			
+		case 2: // 3 horizontal line of cones
+			if (obstacleSchemeTracker % (int)(timeBetweenObstacles / 3) == 0) {
+				int xPosition = rand.nextInt((Background.roadBarrierRight-(ConeObstacle.width * 4)) - Background.roadBarrierLeft) + Background.roadBarrierLeft;
+				ConeObstacle cone = new ConeObstacle(xPosition, -ConeObstacle.height);
+				ConeObstacle cone1 = new ConeObstacle(xPosition + ConeObstacle.width, -ConeObstacle.height);
+				ConeObstacle cone2 = new ConeObstacle(xPosition + (2*ConeObstacle.width), -ConeObstacle.height);
+				ConeObstacle cone3 = new ConeObstacle(xPosition + (3*ConeObstacle.width), -ConeObstacle.height);
+				obstacleList.add(cone);
+				obstacleList.add(cone1);
+				obstacleList.add(cone2);
+				obstacleList.add(cone3);
+			}
+			
+			if (obstacleSchemeTracker < 0) {
+				obstacleScheme = 0;
+				obstacleSchemeTracker = timeBetweenObstacles;
+			}
+			break;
+			
+		case 3: // center opening
+			if (obstacleSchemeTracker == (int)(timeBetweenObstacles / 2)) {
+			int xPosition = Background.roadBarrierLeft;
+			ConeObstacle cone = new ConeObstacle(xPosition, -ConeObstacle.height);
+			ConeObstacle cone1 = new ConeObstacle(xPosition + ConeObstacle.width, -ConeObstacle.height);
+			ConeObstacle cone2 = new ConeObstacle(xPosition + (2*ConeObstacle.width), -ConeObstacle.height);
+			ConeObstacle cone7 = new ConeObstacle(xPosition + (3*ConeObstacle.width), -ConeObstacle.height);
+			
+			xPosition = Background.roadBarrierRight - (4*ConeObstacle.width);
+			ConeObstacle cone3 = new ConeObstacle(xPosition, -ConeObstacle.height);
+			ConeObstacle cone4 = new ConeObstacle(xPosition + ConeObstacle.width, -ConeObstacle.height);
+			ConeObstacle cone5 = new ConeObstacle(xPosition + (2*ConeObstacle.width), -ConeObstacle.height);
+			ConeObstacle cone6 = new ConeObstacle(xPosition + (3*ConeObstacle.width), -ConeObstacle.height);
+			
+			obstacleList.add(cone);
+			obstacleList.add(cone1);
+			obstacleList.add(cone2);
+			obstacleList.add(cone3);
+			obstacleList.add(cone4);
+			obstacleList.add(cone5);
+			obstacleList.add(cone6);
+			obstacleList.add(cone7);
+			} else if (obstacleSchemeTracker == 0 || obstacleSchemeTracker == timeBetweenObstacles - 1) {
+				int xPosition = Background.roadBarrierLeft + (int)((Background.roadBarrierRight - Background.roadBarrierLeft)/2) - (2*ConeObstacle.width);
+				ConeObstacle cone = new ConeObstacle(xPosition, -ConeObstacle.height);
+				ConeObstacle cone1 = new ConeObstacle(xPosition + ConeObstacle.width, -ConeObstacle.height);
+				ConeObstacle cone2 = new ConeObstacle(xPosition + (2*ConeObstacle.width), -ConeObstacle.height);
+				ConeObstacle cone3 = new ConeObstacle(xPosition + (3*ConeObstacle.width), -ConeObstacle.height);
+				
+				obstacleList.add(cone);
+				obstacleList.add(cone1);
+				obstacleList.add(cone2);
+				obstacleList.add(cone3);
+			}
+			
+			if (obstacleSchemeTracker < 0) {
+				obstacleScheme = 0;
+				obstacleSchemeTracker = timeBetweenObstacles;
+			}
+		default:
+			break;
+		}
+		
+		/* Update cones */
+		for (ConeObstacle cone: obstacleList) {
+			/* Check Collisions */
+			if (cone.getPositionX() < player.getPositionX() + Car.width &&
+					cone.getPositionX() + ConeObstacle.width > player.getPositionX() &&
+					cone.getPositionY() < player.getPositionY() + Car.height &&
+					cone.getPositionY() + ConeObstacle.height > player.getPositionY()) {
+				State = STATE.GAMEOVER;
+			}
+			
+			cone.update();
+		}
+		
+		obstacleSchemeTracker--;
+	}
+	
+	private void handleMath() {
+		Random rand = new Random();
+		
+		switch (mathScheme) {
+		case 0:
+			if (mathSchemeTracker < 0 && mathProblemActive == false) {
+				mathScheme = 1;
+				mathIndex = 0;
+				mathProblemActive = true;
+			}
+			break;
+			
+		case 1:
+			problem = "";
+			String temp;
+			int x, y, operator, r;
+			x = 1 + rand.nextInt(8);
+			y = 1 + rand.nextInt(8);
+			operator = 1 + rand.nextInt(3);
+			problem += (Integer.toString(x));
+			switch(operator) {
+			case 1:
+				problem += (" + " + Integer.toString(y));
+				r = x + y;
+				temp = Integer.toString(r);
+				for( int i = 0; i < temp.length(); i++ ) {
+					result.add(temp.charAt(i));
+				}
+				break;
+			case 2:
+				while(x - y < 0) {
+					problem = "";
+					x = 1 + rand.nextInt(8);
+					y = 1 + rand.nextInt(8);
+					operator = 1 + rand.nextInt(3);
+					problem += (Integer.toString(x));
+				}
+				problem += (" - " + Integer.toString(y));
+				r = x - y;
+				temp = Integer.toString(r);
+				for( int i = 0; i < temp.length(); i++ ) {
+					result.add(temp.charAt(i));
+				}
+				break;
+			case 3:
+				problem += (" * " + Integer.toString(y));
+				r = x * y;
+				temp = Integer.toString(r);
+				for( int i = 0; i < temp.length(); i++ ) {
+					result.add(temp.charAt(i));
+				}
+				break;
+				
+			default:
+				break;
+			}
+			
+			mathScheme = 0;
+			break;
+			
+		default:
+			break;
+		}
+		mathSchemeTracker -= 1;
+	}
 
    public Boolean getFirstRun() {
       return firstRun;
@@ -589,6 +622,4 @@ public class Game implements Runnable {
       return multiplication;
    }
    
-
-
 }

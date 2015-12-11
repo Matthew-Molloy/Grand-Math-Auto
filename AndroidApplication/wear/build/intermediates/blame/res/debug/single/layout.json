@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "/Users/matthewmolloy/Downloads/wearable-message-api-example-master/wear/build/intermediates/res/merged/debug/layout/main_activity.xml",
+        "source": "/Users/matthewmolloy/Downloads/wearable-message-api-example-master/wear/src/main/res/layout/main_activity.xml"
+    },
+    {
+        "merged": "/Users/matthewmolloy/AndroidStudioProjects/GrandMathAuto/wear/build/intermediates/res/merged/debug/layout/main_activity.xml",
+        "source": "/Users/matthewmolloy/AndroidStudioProjects/GrandMathAuto/wear/src/main/res/layout/main_activity.xml"
+    }
+]

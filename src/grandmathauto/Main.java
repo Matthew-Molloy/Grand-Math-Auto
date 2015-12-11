@@ -15,6 +15,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public class Main extends Applet implements KeyListener, MouseListener {
+
    static final int windowWidth = 800;
    static final int windowHeight = 480;
 
@@ -47,12 +48,7 @@ public class Main extends Applet implements KeyListener, MouseListener {
          e.printStackTrace();
       }
 
-      try {
-         graphicsManager = new GraphicsManager(this);
-      } catch (ClassNotFoundException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      }
+      graphicsManager = new GraphicsManager(this);
       game = new Game(this);
    }
 
@@ -224,112 +220,117 @@ public class Main extends Applet implements KeyListener, MouseListener {
    
 
    /**
-    * Handles key release events
-    */
-   @Override
-   public void keyReleased(KeyEvent e) {
-      if (game.getState() == STATE.GAME) {
-         char c = e.getKeyChar();
-         if (game.mathProblemActive == true && c >= '0' && c <= '9') {
-            if (c == game.result.get(game.mathIndex)) {
-               System.out.println(game.result.size() - 1);
-               System.out.println(game.mathIndex);
-               if (game.result.size() - 1 == game.mathIndex) {
-                  game.problem = "Correct!";
-                  game.mathIndex = 0;
-                  game.mathSchemeTracker = 300;
-                  game.result = new ArrayList<>();
-                  game.mathProblemActive = false;
-                  System.out.println("Correct!");
-               } else {
-                  game.mathIndex++;
-               }
-            } else {
-               game.problem = "Oops!";
-               game.mathProblemActive = false;
-               game.result = new ArrayList<>();
-               game.mathSchemeTracker = 300;
-            }
-         }
-         switch (e.getKeyCode()) {
-         case KeyEvent.VK_UP:
-            game.getPlayer().stopUp();
-            break;
-         case KeyEvent.VK_DOWN:
-            game.getPlayer().stopDown();
-            break;
-         case KeyEvent.VK_LEFT:
-            game.getPlayer().stopLeft();
-            break;
-         case KeyEvent.VK_RIGHT:
-            game.getPlayer().stopRight();
-            break;
-         case KeyEvent.VK_SPACE:
-            break;
-         }
-      }
-   }
+	 * Handles key release events
+	 */
+	@Override
+	public void keyReleased(KeyEvent e) {
+		if (game.getState() == STATE.GAME) {
+			char c = e.getKeyChar();
+			if (game.mathProblemActive == true && c >= '0' && c <= '9') {
+				if( c == game.result.get(game.mathIndex)) {
+					if( game.result.size() - 1 == game.mathIndex ) {
+						game.problem = "Correct!";
+						game.mathSchemeTracker = 180;
+						if (Game.speed > Game.minSpeed) {
+							Game.speed -= 2;
+						}
+						game.result = new ArrayList<>();
+						game.mathProblemActive = false;
+						System.out.println("Correct!");
+					}
+					else {
+						game.mathIndex++;
+					}
+				}
+				else {
+					game.problem = "Oops!";
+					game.mathProblemActive = false;
+					game.result = new ArrayList<>();
+					game.mathSchemeTracker = 240;
+					Game.speed++;
+				}
+			}
+			switch (e.getKeyCode()) {
+			case KeyEvent.VK_UP:
+				game.getPlayer().stopUp();
+				break;
+			case KeyEvent.VK_DOWN:
+				game.getPlayer().stopDown();
+				break;
+			case KeyEvent.VK_LEFT:
+				game.getPlayer().stopLeft();
+				break;
+			case KeyEvent.VK_RIGHT:
+				game.getPlayer().stopRight();
+				break;
+			case KeyEvent.VK_SPACE:
+				break;
+			}
+		}
+	}
 
-   /**
-    * Handles key types. Called if key stroke would generate a Unicode character
-    */
-   @Override
-   public void keyTyped(KeyEvent e) {
-      // TODO Auto-generated method stub
+	/**
+	 * Handles key types. Called if key stroke would generate a Unicode
+	 * character
+	 */
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
 
-   }
+	}
 
-   public URL getBase() {
-      return base;
-   }
+	public URL getBase() {
+		return base;
+	}
 
-   public Game getGame() {
-      return game;
-   }
+	public Game getGame() {
+		return game;
+	}
 
-   /**
-    * Called at end of applet execution
-    */
-   @Override
-   public void stop() {
-      // TODO Auto-generated method stub
-   }
+	/**
+	 * Called at end of applet execution
+	 */
+	@Override
+	public void stop() {
+		// TODO Auto-generated method stub
+	}
 
-   /**
-    * Destroy any resources that has allocated
-    */
-   @Override
-   public void destroy() {
-      // TODO Auto-generated method stub
-   }
+	/**
+	 * Destroy any resources that has allocated
+	 */
+	@Override
+	public void destroy() {
+		// TODO Auto-generated method stub
+	}
 
-   @Override
-   public void mouseClicked(MouseEvent e) {
-      System.out.println("(" + e.getX() + ", " + e.getY() + ")");
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		System.out.println("(" + e.getX() + ", " + e.getY() + ")");
+		
+	}
 
-   }
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
 
-   @Override
-   public void mouseEntered(MouseEvent e) {
-      // TODO Auto-generated method stub
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
 
-   }
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
 
-   @Override
-   public void mouseExited(MouseEvent e) {
-      // TODO Auto-generated method stub
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
 
-   }
-
-   @Override
-   public void mousePressed(MouseEvent e) {
-      // TODO Auto-generated method stub
-
-   }
-
-   @Override
-   public void mouseReleased(MouseEvent e) {
-      // TODO Auto-generated method stub
-
-   }
 }
