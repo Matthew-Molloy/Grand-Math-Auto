@@ -270,6 +270,8 @@ public class GraphicsManager {
          y = (d.height / 2) - fm.getHeight();
 
          g.drawImage(connect, x, y, main);
+         
+         
 
          break;
 

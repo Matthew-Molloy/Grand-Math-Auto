@@ -1,5 +1,7 @@
 package grandmathauto;
 
+import grandmathauto.Game.STATE;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -9,8 +11,11 @@ public class Server implements Runnable {
 	
 	volatile public Float currentData = null;
 	static int portNum = 4040;
+	Game game = null;
 	
-	public Server() { }
+	public Server(Game g) {
+		game = g;
+	}
 
 	@Override
 	public void run() {
@@ -22,6 +27,7 @@ public class Server implements Runnable {
 				ssock = new ServerSocket(portNum);
 				System.out.println("Listening for client...");
 				sock = ssock.accept();
+				game.setState(STATE.MAIN);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

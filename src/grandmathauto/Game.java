@@ -51,7 +51,7 @@ public class Game implements Runnable {
    private Server server;
    private int dataCheck = 5;
    private boolean serverCheck = true;
-
+   
    // Sensor stuff
    private boolean menuCheck = true;
 
@@ -86,12 +86,6 @@ public class Game implements Runnable {
          /* In main menu */
          case MAIN:
             main.repaint();
-            if (serverCheck) {
-               // Start server thread to listen for sensor input
-               server = new Server();
-               new Thread(server).start();
-               serverCheck = false;
-            }
             checkSensorMenu();
             break;
 
@@ -177,6 +171,12 @@ System.out.println("Your score is " + (int)(elapsedTicks/60));
 
          case CONNECTION:
             main.repaint();
+            if (serverCheck) {
+                // Start server thread to listen for sensor input
+                server = new Server(this);
+                new Thread(server).start();
+                serverCheck = false;
+             }
             break;
 
          // Select a skill level before playing game
