@@ -7,6 +7,7 @@ public class Game implements Runnable {
 	final int FRAMES_PER_SECOND = 60;
 	final int SKIP_TICKS = 1000 / FRAMES_PER_SECOND;
 	static int speed = 0;
+	static int minSpeed = 0;
 
 	private Main main;
 	private Car player;
@@ -100,13 +101,14 @@ public class Game implements Runnable {
 					obstacleScheme = 0;
 					obstacleSchemeTracker = 0;
 					mathSchemeTracker = 0;
-					timeBetweenObstacles = 240;
+					timeBetweenObstacles = 180;
 					mathScheme = 0;
 					mathSchemeTracker = 0;
 					mathProblemActive = false;
 					correct = false;
 					mathIndex = 0;
 					speed = 5;
+					minSpeed = 5;
 					result = new ArrayList<>();
 					obstacleList = new ArrayList<>();
 					bg1 = new Background(0, 0);
@@ -127,9 +129,12 @@ public class Game implements Runnable {
 				main.repaint();
 				elapsedTicks++;
 				
-				/* graudally increase difficulty */
-				if (elapsedTicks % 600 ==0) {
-					speed++;
+				/* gradually increase difficulty */
+				if (elapsedTicks % 900 == 0) {
+					minSpeed++;
+					if (elapsedTicks % 300 == 0) {
+						speed++;	
+					}
 				}
 
 				/* Update 60 frames per second */
@@ -232,18 +237,17 @@ public class Game implements Runnable {
 		Random rand = new Random();
 		
 		switch (obstacleScheme) {
-		case 0: // No obstacles
+		case 0: // No obstacles			
 			/* Generate new obstacle */
 			if (obstacleSchemeTracker < 0) {
+				System.out.println("Speed/MinSpeed: " + Game.speed + "/" + Game.minSpeed);
 				obstacleScheme = 1 + rand.nextInt(2);
 				obstacleSchemeTracker = timeBetweenObstacles;
-
-				System.out.println(timeBetweenObstacles);
 			}
 			break;
 
-		case 1: // 5 random cones
-			if (obstacleSchemeTracker % (int)(timeBetweenObstacles / 5) == 0) {
+		case 1: // 8 random cones
+			if (obstacleSchemeTracker % (int)(timeBetweenObstacles / 8) == 0) {
 				int xPosition = rand.nextInt((Background.roadBarrierRight-ConeObstacle.width) - Background.roadBarrierLeft) + Background.roadBarrierLeft;
 				ConeObstacle cone = new ConeObstacle(xPosition, -ConeObstacle.height);
 				obstacleList.add(cone);
