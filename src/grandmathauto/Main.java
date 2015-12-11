@@ -101,7 +101,7 @@ public class Main extends Applet implements KeyListener, MouseListener {
    public void keyPressed(KeyEvent e) {
       int index;
 
-      if (e.getKeyCode() == KeyEvent.VK_M) {
+      if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
          game.setFirstRun(true);
          game.setState(STATE.MAIN);
       }
@@ -270,6 +270,22 @@ public class Main extends Applet implements KeyListener, MouseListener {
 				break;
 			case KeyEvent.VK_SPACE:
 				break;
+			}
+		}
+		
+		if (game.getState() == STATE.GAMEOVER) {
+			char c = e.getKeyChar();
+			if (c <= 'z' && c >= 'a') {
+				game.playerName += c;
+			}
+			
+			if (e.getKeyChar() == KeyEvent.VK_ENTER) {
+				game.getHighScores().addScore(game.playerName, game.score);
+				game.setState(STATE.MAIN);
+			}
+			
+			if(e.getKeyChar() == KeyEvent.VK_BACK_SPACE){
+				game.playerName = game.playerName.substring(0,game.playerName.length()-1);
 			}
 		}
 	}

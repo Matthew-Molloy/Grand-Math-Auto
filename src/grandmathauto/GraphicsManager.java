@@ -24,8 +24,9 @@ public class GraphicsManager {
    private String[] levelOptions = { "Select Skill Level", "Addition",
          "Subtraction", "Multiplication", "Start Game" };
    private String[] names = { "Matthew Molloy", "Jennifer Tang", "Ricky Yu" };
-   private List<String> scores = new ArrayList<String>();
+   private String[] gameOver = {"Game Over", "Score:", "Enter your name for score: "};
    private int size;
+   boolean displayed = false;
 
    public GraphicsManager(Main main) throws ClassNotFoundException {
 
@@ -220,18 +221,22 @@ public class GraphicsManager {
 
          g.drawString(menuOptions[3], x, y);
 
+         x = (d.width/2);
+         
          g.setFont(font2);
          fm = g.getFontMetrics();
+         
+         x = 200;
+         y = 200;
 
-         size = scores.size();
-
-         for (index = 0; index < size; index++) {
-            y = 250 + (60 * index);
-            x = (d.width / 2) - 300;
-
-            g.drawString(scores.get(index), x + 200, y);
+         if(!displayed)
+         {
+         game.getHighScores().getHighscoreString(g, x, y);
          }
-
+         else
+         {
+        	 displayed = true;
+         }
          break;
 
       case CREDITS:
@@ -337,7 +342,23 @@ public class GraphicsManager {
             g.drawImage(leftArrow, 435, 360, main);
          }
          break;
+         
+      case GAMEOVER:
+    	  g.setFont(font1);
+          g.setColor(Color.white);
 
+          fm = g.getFontMetrics();
+          x = (d.width / 2) - (fm.stringWidth(gameOver[0]) / 2);
+          y = 100;
+
+          g.drawString(gameOver[0], x, y);
+          
+          g.setFont(font2);
+    	  
+          g.drawString(gameOver[1], x - 100, 200);
+          g.drawString(Integer.toString(game.score), x, 260);
+          g.drawString(gameOver[2], x - 100, 320);
+          g.drawString(game.playerName, x , 380);
       default:
          break;
 

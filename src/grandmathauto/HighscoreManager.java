@@ -1,6 +1,7 @@
 package grandmathauto;
 
 import java.util.*;
+import java.awt.Graphics;
 import java.io.*;
 
 public class HighscoreManager {
@@ -82,9 +83,9 @@ public class HighscoreManager {
       }
    }
    
-   public String getHighscoreString() {
+   public void getHighscoreString(Graphics g, int xpos, int y) {
       String highscoreString = "";
-      int max = 10;
+      int max = 5;
 
       ArrayList<Score> scores;
       scores = getScores();
@@ -95,9 +96,11 @@ public class HighscoreManager {
           x = max;
       }
       while (i < x) {
-          highscoreString += (i + 1) + ".\t" + scores.get(i).getName() + "\t\t" + scores.get(i).getScore() + "\n";
+          highscoreString += (i + 1) + "-" + scores.get(i).getName() + "-" + scores.get(i).getScore() + "\n";
+          g.drawString(highscoreString, xpos, y+(60*i));
           i++;
+          highscoreString = "";
       }
-      return highscoreString;
+  
 }
 }

@@ -33,6 +33,9 @@ public class Game implements Runnable {
    private int obstacleSchemeTracker = 0; // used to track what step in the
    // scheme is currently needed
    private int timeBetweenObstacles = 0;
+   
+   public String playerName = "";
+   public int score = 0;
 
    // math stuff
    public int mathScheme = 0;
@@ -110,6 +113,9 @@ public class Game implements Runnable {
                mathScheme = 0;
                mathSchemeTracker = 0;
                mathProblemActive = false;
+               
+               playerName = "";
+               score = 0;
 
                speed = 5;
                minSpeed = 5;
@@ -159,7 +165,6 @@ minSpeed++;
 
          /* In game over state */
          case GAMEOVER:
-System.out.println("Your score is " + (int)(elapsedTicks/60));
             main.repaint();
             break;
 
@@ -336,7 +341,11 @@ System.out.println("Your score is " + (int)(elapsedTicks/60));
 					cone.getPositionX() + ConeObstacle.width > player.getPositionX() &&
 					cone.getPositionY() < player.getPositionY() + Car.height &&
 					cone.getPositionY() + ConeObstacle.height > player.getPositionY()) {
-				State = STATE.GAMEOVER;
+				
+	        	 score = (int)(elapsedTicks/60);
+	 			 obstacleList = new ArrayList<>();
+	        	 State = STATE.GAMEOVER;
+	        	 firstRun = true;
 			}
 			
 			cone.update();
@@ -591,8 +600,8 @@ System.out.println("Your score is " + (int)(elapsedTicks/60));
 	         skillDisplay = false;
 	         skillIndex = 0;
 	         State = STATE.GAME;
-	         break;
     	  }
+         break;
       }
    }
 
@@ -639,5 +648,13 @@ System.out.println("Your score is " + (int)(elapsedTicks/60));
    public boolean isMultiplcation() {
       return multiplication;
    }
+
+public HighscoreManager getHighScores() {
+	return highScores;
+}
+
+public void setHighScores(HighscoreManager highScores) {
+	this.highScores = highScores;
+}
    
 }
