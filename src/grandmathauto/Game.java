@@ -98,7 +98,7 @@ public class Game implements Runnable {
 					obstacleScheme = 0;
 					obstacleSchemeTracker = 0;
 					mathSchemeTracker = 0;
-					timeBetweenObstacles = 180;
+					timeBetweenObstacles = 240;
 					mathScheme = 0;
 					mathSchemeTracker = 0;
 					mathProblemActive = false;
@@ -227,13 +227,19 @@ public class Game implements Runnable {
 		case 0: // No obstacles
 			/* Generate new obstacle */
 			if (obstacleSchemeTracker < 0) {
+				
+				if (timeBetweenObstacles > 60) {
+					timeBetweenObstacles -= 10;	
+				}
 				obstacleScheme = 1 + rand.nextInt(2);
-				obstacleSchemeTracker = 180;
+				obstacleSchemeTracker = timeBetweenObstacles;
+
+				System.out.println(timeBetweenObstacles);
 			}
 			break;
 
 		case 1: // 5 random cones
-			if (obstacleSchemeTracker % 36 == 0) {
+			if (obstacleSchemeTracker % (int)(timeBetweenObstacles / 5) == 0) {
 				int xPosition = rand.nextInt((Background.roadBarrierRight-ConeObstacle.width) - Background.roadBarrierLeft) + Background.roadBarrierLeft;
 				ConeObstacle cone = new ConeObstacle(xPosition, -ConeObstacle.height);
 				obstacleList.add(cone);
@@ -246,18 +252,16 @@ public class Game implements Runnable {
 			break;
 			
 		case 2: // 3 horizontal line of cones
-			if (obstacleSchemeTracker % 60 == 0) {
-				int xPosition = rand.nextInt((Background.roadBarrierRight-(ConeObstacle.width * 5)) - Background.roadBarrierLeft) + Background.roadBarrierLeft;
+			if (obstacleSchemeTracker % (int)(timeBetweenObstacles / 3) == 0) {
+				int xPosition = rand.nextInt((Background.roadBarrierRight-(ConeObstacle.width * 4)) - Background.roadBarrierLeft) + Background.roadBarrierLeft;
 				ConeObstacle cone = new ConeObstacle(xPosition, -ConeObstacle.height);
 				ConeObstacle cone1 = new ConeObstacle(xPosition + ConeObstacle.width, -ConeObstacle.height);
 				ConeObstacle cone2 = new ConeObstacle(xPosition + (2*ConeObstacle.width), -ConeObstacle.height);
 				ConeObstacle cone3 = new ConeObstacle(xPosition + (3*ConeObstacle.width), -ConeObstacle.height);
-				ConeObstacle cone4 = new ConeObstacle(xPosition + (4*ConeObstacle.width), -ConeObstacle.height);
 				obstacleList.add(cone);
 				obstacleList.add(cone1);
 				obstacleList.add(cone2);
 				obstacleList.add(cone3);
-				obstacleList.add(cone4);
 			}
 			
 			if (obstacleSchemeTracker < 0) {
@@ -291,6 +295,7 @@ public class Game implements Runnable {
 		case 0:
 			if (mathSchemeTracker < 0 && mathProblemActive == false) {
 				mathScheme = 1;
+				mathIndex = 0;
 				mathProblemActive = true;
 			}
 			break;
@@ -311,7 +316,6 @@ public class Game implements Runnable {
 				for( int i = 0; i < temp.length(); i++ ) {
 					result.add(temp.charAt(i));
 				}
-				System.out.println(problem);
 				break;
 			case 2:
 				while(x - y < 0) {
@@ -327,7 +331,6 @@ public class Game implements Runnable {
 				for( int i = 0; i < temp.length(); i++ ) {
 					result.add(temp.charAt(i));
 				}
-				System.out.println(problem);
 				break;
 			case 3:
 				problem += (" * " + Integer.toString(y));
@@ -336,7 +339,6 @@ public class Game implements Runnable {
 				for( int i = 0; i < temp.length(); i++ ) {
 					result.add(temp.charAt(i));
 				}
-				System.out.println(problem);
 				break;
 				
 			default:

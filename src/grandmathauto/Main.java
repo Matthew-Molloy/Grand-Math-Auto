@@ -233,8 +233,7 @@ public class Main extends Applet implements KeyListener, MouseListener {
 					System.out.println(game.mathIndex);
 					if( game.result.size() - 1 == game.mathIndex ) {
 						game.problem = "Correct!";
-						game.mathIndex = 0;
-						game.mathSchemeTracker = 300;
+						game.mathSchemeTracker = 60;
 						game.result = new ArrayList<>();
 						game.mathProblemActive = false;
 						System.out.println("Correct!");
@@ -247,7 +246,7 @@ public class Main extends Applet implements KeyListener, MouseListener {
 					game.problem = "Oops!";
 					game.mathProblemActive = false;
 					game.result = new ArrayList<>();
-					game.mathSchemeTracker = 300;
+					game.mathSchemeTracker = 60;
 				}
 			}
 			switch (e.getKeyCode()) {
