@@ -587,10 +587,12 @@ System.out.println("Your score is " + (int)(elapsedTicks/60));
 
       // Start Game
       case 3:
-         skillDisplay = false;
-         skillIndex = 0;
-         State = STATE.GAME;
-         break;
+    	  if (addition || multiplication || subtraction) {
+	         skillDisplay = false;
+	         skillIndex = 0;
+	         State = STATE.GAME;
+	         break;
+    	  }
       }
    }
 
