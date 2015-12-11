@@ -48,7 +48,12 @@ public class Main extends Applet implements KeyListener, MouseListener {
          e.printStackTrace();
       }
 
-      graphicsManager = new GraphicsManager(this);
+      try {
+		graphicsManager = new GraphicsManager(this);
+	} catch (ClassNotFoundException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
       game = new Game(this);
    }
 

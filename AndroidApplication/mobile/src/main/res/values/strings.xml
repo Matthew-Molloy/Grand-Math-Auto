@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Wearable Message Api Example</string>
+    <string name="app_name">Grand Math Auto</string>
     <string name="received_message1">Received message 1.</string>
     <string name="received_message2">Received message 2.</string>
     <string name="received_messages">Received messages:</string>

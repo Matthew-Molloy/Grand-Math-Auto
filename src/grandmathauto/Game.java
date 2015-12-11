@@ -6,6 +6,9 @@ import java.util.Random;
 public class Game implements Runnable {
    final int FRAMES_PER_SECOND = 60;
    final int SKIP_TICKS = 1000 / FRAMES_PER_SECOND;
+   
+   static int speed = 0;
+   static int minSpeed = 0;
 
    private Main main;
    private Car player;
@@ -107,6 +110,10 @@ public class Game implements Runnable {
                mathScheme = 0;
                mathSchemeTracker = 0;
                mathProblemActive = false;
+
+               speed = 5;
+               minSpeed = 5;
+
                correct = false;
                mathIndex = 0;
                result = new ArrayList<>();
