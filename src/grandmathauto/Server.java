@@ -27,7 +27,7 @@ public class Server implements Runnable {
 				ssock = new ServerSocket(portNum);
 				System.out.println("Listening for client...");
 				sock = ssock.accept();
-				game.setState(STATE.MAIN);
+				game.setState(STATE.INSTRUCTIONS);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -39,7 +39,6 @@ public class Server implements Runnable {
 			while( !(input.equals( "exit" )) ) {
 				input = datain.readLine();
 				currentData = Float.parseFloat(input);
-				System.out.println(currentData);
 				//inputNums = input.split(delims);
 				input = "";
 			}

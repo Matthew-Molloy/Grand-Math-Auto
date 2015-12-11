@@ -60,7 +60,7 @@ public class Game implements Runnable {
    public ArrayList<ConeObstacle> obstacleList = new ArrayList<>();
 
    public enum STATE {
-      MAIN, GAME, GAMEOVER, OPTIONS, SCORES, CREDITS, CONNECTION, SKILL_LEVEL, QUIT
+      MAIN, GAME, GAMEOVER, OPTIONS, SCORES, CREDITS, CONNECTION, SKILL_LEVEL, QUIT, INSTRUCTIONS
    };
 
    private STATE[] mainArr = { STATE.SKILL_LEVEL, STATE.OPTIONS, STATE.SCORES,
@@ -186,6 +186,10 @@ System.out.println("Your score is " + (int)(elapsedTicks/60));
             main.repaint();
             break;
 
+         case INSTRUCTIONS:
+        	 main.repaint();
+        	 break;
+            
          /* Close applet */
          case QUIT:
             running = false;
@@ -219,18 +223,18 @@ System.out.println("Your score is " + (int)(elapsedTicks/60));
       if (data != null) {
          int index;
          // neutral movement
-         if (data >= -dataCheck && data <= dataCheck) {
+         if (data >= -3 && data <= 3) {
             menuCheck = true;
          }
          // right movement
-         else if (data > dataCheck && menuCheck == true) {
+         else if (data > 8 && menuCheck == true) {
             index = getMainIndex();
             index++;
             setMainIndex(index);
             menuCheck = false;
          }
          // left movement
-         else if (data < -dataCheck && menuCheck == true) {
+         else if (data < -8 && menuCheck == true) {
             index = getMainIndex();
             index--;
             setMainIndex(index);

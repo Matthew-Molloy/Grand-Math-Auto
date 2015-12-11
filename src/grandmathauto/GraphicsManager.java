@@ -56,6 +56,7 @@ public class GraphicsManager {
       // Fonts, Title & Options
       Font font1 = new Font("Helvetica", Font.BOLD, 75);
       Font font2 = new Font("Helvetica", Font.BOLD, 50);
+      Font font3 = new Font("Helvetica", Font.BOLD, 25);
 
       switch (game.getState()) {
       /* In main menu */
@@ -344,6 +345,33 @@ public class GraphicsManager {
          }
          break;
 
+      case INSTRUCTIONS:
+    	  g.setFont(font1);
+          g.setColor(Color.white);
+          
+          fm = g.getFontMetrics();
+          x = (d.width / 2) - (fm.stringWidth(levelOptions[0]) / 2) + 80;
+          y = 75;
+    	  
+          g.drawString("Instructions", x, y);
+          
+          g.setFont(font3);
+          g.setColor(Color.white);
+          x += 5;
+          
+          y += 100;
+          g.drawString("Use enter to select a menu option", x, y);
+          y += 50;
+          g.drawString("Rotate your wrist to steer your car", x, y);
+          y += 50;
+          g.drawString("Solve the math problems by typing", x, y);
+          y += 25;
+          g.drawString("the answer in order to slow the game down", x, y);
+          y += 50;
+          g.drawString("Press enter to go to the main menu", x, y);
+          y += 50;
+    	  break;
+         
       default:
          break;
 

@@ -221,6 +221,12 @@ public class Main extends Applet implements KeyListener, MouseListener {
                game.setState(STATE.MAIN);
             }
          }
+         
+         if (game.getState() == STATE.INSTRUCTIONS) {
+        	 if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+	             game.setState(STATE.MAIN);
+        	 }
+         }
       }
    
 
