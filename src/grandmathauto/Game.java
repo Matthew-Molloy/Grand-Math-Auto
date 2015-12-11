@@ -11,7 +11,7 @@ public class Game implements Runnable {
 	private Car player;
 	private Background bg1, bg2;
 	
-	private boolean addition = true, subtraction = true, multiplication = true, division = true;
+	private boolean addition = false, subtraction = false, multiplication = false;
 	
 	private boolean soundOn = true;
 	private boolean bgmOn = true;
@@ -58,7 +58,7 @@ public class Game implements Runnable {
 	private STATE[] mainArr = { STATE.SKILL_LEVEL, STATE.OPTIONS, STATE.SCORES,
 			STATE.CREDITS, STATE.QUIT };
 
-	private int[] optionArr = { 0, 1, 2 }, skillArr = { 0, 1, 2, 3, 4 };
+	private int[] optionArr = { 0, 1, 2 }, skillArr = { 0, 1, 2, 3 };
 
 	private int mainIndex = 0, optionIndex = 0, skillIndex = 0;
 
@@ -424,8 +424,8 @@ public class Game implements Runnable {
 
 	public void setSkillIndex(int val) {
 		if (val < 0) {
-			skillIndex = 4;
-		} else if (val > 4) {
+			skillIndex = 3;
+		} else if (val > 3) {
 			skillIndex = 0;
 		} else {
 			skillIndex = val;
@@ -530,18 +530,6 @@ public class Game implements Runnable {
 			else
 			{
 				multiplication = true;
-			}
-			break;
-		
-		// Division	
-		case 3:
-			if(division)
-			{
-				division = false;
-			}
-			else
-			{
-				division = true;
 			}
 			break;
 		
