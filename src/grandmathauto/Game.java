@@ -74,6 +74,7 @@ public class Game implements Runnable {
    private int mainIndex = 0, optionIndex = 0, skillIndex = 0;
 
    private STATE State = STATE.CONNECTION;
+   public int tempScore = 0;
    
    private HighscoreManager highScores = new HighscoreManager();
 
@@ -112,6 +113,7 @@ public class Game implements Runnable {
                
                playerName = "";
                score = 0;
+               tempScore = 0;
 
                speed = 5;
                minSpeed = 5;
@@ -126,6 +128,7 @@ public class Game implements Runnable {
                      Main.windowHeight - 70);
                nextGameTick = System.currentTimeMillis();
                firstRun = false;
+              
             }
 
             /* Update game object physics and repaint scene */
@@ -136,6 +139,9 @@ public class Game implements Runnable {
             handleObstacles();
             handleMath();
             main.repaint();
+            
+            tempScore = (int)(elapsedTicks/60);
+            
             elapsedTicks++;
 
 /* gradually increase difficulty */
@@ -555,10 +561,10 @@ minSpeed++;
       // BGM
       case 1:
          if (bgmOn) {
-        	 //main.bgm.stop();
+        	 main.bgm.stop();
             bgmOn = false;
          } else {
-        	 //main.bgm.play();
+        	 main.bgm.loop();
             bgmOn = true;
          }
          break;

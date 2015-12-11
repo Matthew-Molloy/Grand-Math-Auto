@@ -51,8 +51,8 @@ public class Main extends Applet implements KeyListener, MouseListener {
       } catch (Exception e) {
          e.printStackTrace();
       }
-      bgm = getAudioClip(base, "data/bgm2.mp3");
-      bgm.play();
+      bgm = getAudioClip(base, "bgm.au");
+      bgm.loop();
 
       try {
 		graphicsManager = new GraphicsManager(this);

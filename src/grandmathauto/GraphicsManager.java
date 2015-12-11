@@ -137,6 +137,9 @@ public class GraphicsManager {
             if (game.problem != null) {
                g.drawString(game.problem, 600, 40);
             }
+            
+            // draw score
+            g.drawString("Score: " + Integer.toString(game.tempScore), 600, 80);
 
             for (Iterator<ConeObstacle> iterator = game.obstacleList
                   .iterator(); iterator.hasNext();) {
@@ -361,9 +364,9 @@ public class GraphicsManager {
           
           g.setFont(font2);
     	  
-          g.drawString(gameOver[1], x - 100, 200);
+          g.drawString(gameOver[1], x - 150, 200);
           g.drawString(Integer.toString(game.score), x, 260);
-          g.drawString(gameOver[2], x - 100, 320);
+          g.drawString(gameOver[2], x - 150, 320);
           g.drawString(game.playerName, x , 380);
           break;
 
