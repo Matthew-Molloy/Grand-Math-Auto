@@ -18,6 +18,7 @@ public class Game implements Runnable {
 	
 	private boolean scoreDisplay = false;
 	private boolean creditDisplay = false;
+	private boolean optionsDisplay = false;
 
 	private boolean firstRun = true;
 	private boolean running = true;
@@ -62,7 +63,7 @@ public class Game implements Runnable {
 
 	private int mainIndex = 0, optionIndex = 0, skillIndex = 0;
 
-	private STATE State = STATE.MAIN;
+	private STATE State = STATE.CONNECTION;
 
 	public Game(Main main) {
 		this.main = main;
@@ -555,4 +556,12 @@ public class Game implements Runnable {
 	public void setCreditDisplay(boolean creditDisplay) {
 		this.creditDisplay = creditDisplay;
 	}
+
+   public boolean isOptionsDisplay() {
+      return optionsDisplay;
+   }
+
+   public void setOptionsDisplay(boolean optionsDisplay) {
+      this.optionsDisplay = optionsDisplay;
+   }
 }

@@ -84,7 +84,12 @@ public class Main extends Applet implements KeyListener, MouseListener {
 	 */
 	@Override
 	public void paint(Graphics g) {
-		graphicsManager.paint(g);
+		try {
+         graphicsManager.paint(g);
+      } catch (InterruptedException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
 
 	}
 
@@ -169,31 +174,39 @@ public class Main extends Applet implements KeyListener, MouseListener {
 		}
 
 		if (game.getState() == STATE.OPTIONS) {
-			switch (e.getKeyCode()) {
-			case KeyEvent.VK_UP:
-				index = game.getOptionIndex();
-				index--;
-				game.setOptionIndex(index);
-				break;
-			case KeyEvent.VK_DOWN:
-				index = game.getOptionIndex();
-				index++;
-				game.setOptionIndex(index);
-				break;
-			case KeyEvent.VK_ENTER:
-				index = game.getOptionIndex();
-				game.setOptions();
-	         System.out.println("moo");
-				break;
-			case KeyEvent.VK_SPACE:
-				index = game.getOptionIndex();
-	         System.out.println("moo");
-				game.setOptions();
-			case KeyEvent.VK_ESCAPE:
-				game.setState(STATE.MAIN);
-				break;
+	       if(game.isOptionsDisplay())
+	         {
+	          switch (e.getKeyCode()) {
+	          case KeyEvent.VK_UP:
+	             index = game.getOptionIndex();
+	             index--;
+	             game.setOptionIndex(index);
+	             break;
+	          case KeyEvent.VK_DOWN:
+	             index = game.getOptionIndex();
+	             index++;
+	             game.setOptionIndex(index);
+	             break;
+	          case KeyEvent.VK_ENTER:
+	             index = game.getOptionIndex();
+	             game.setOptions();
+	             break;
+	          case KeyEvent.VK_SPACE:
+	             index = game.getOptionIndex();
+	             game.setOptions();
+	          case KeyEvent.VK_ESCAPE:
+	             game.setState(STATE.MAIN);
+	             break;
+	          }
+	            game.setOptionsDisplay(false);
+	            game.setOptionIndex(0);
+	         }
+	         else
+	         {
+	            game.setState(STATE.MAIN);
+	         }
 			}
-		}
+
 		
 		if(game.getState() == STATE.SCORES)
 		{

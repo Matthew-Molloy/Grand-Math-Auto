@@ -10,7 +10,8 @@ import java.util.Iterator;
 
 public class GraphicsManager {
    static public Image image, currentSprite, playerImage, backgroundImage,
-         debugDot, leftArrow, rightArrow, checkMark, checkBox, coneImage;
+         debugDot, leftArrow, rightArrow, checkMark, checkBox, coneImage,
+         connect1, connect2, connect3;
 
    private Main main;
 
@@ -21,7 +22,6 @@ public class GraphicsManager {
    private String[] levelOptions = { "Select Skill Level", "Addition",
          "Subtraction", "Multiplication", "Division", "Start Game" };
    private String[] names = { "Matthew Molloy", "Jennifer Tang", "Ricky Yu" };
-   private String connection = "Connecting to Android Wear Device";
 
    public GraphicsManager(Main main) {
       this.main = main;
@@ -37,9 +37,12 @@ public class GraphicsManager {
       checkMark = main.getImage(main.getBase(), "data/check.png");
       checkBox = main.getImage(main.getBase(), "data/box.png");
       coneImage = main.getImage(main.getBase(), "data/cone.png");
+      connect1 = main.getImage(main.getBase(), "data/connect1.png");
+      connect2 = main.getImage(main.getBase(), "data/connect2.png");
+      connect3 = main.getImage(main.getBase(), "data/connect3.png");
    }
 
-   public void paint(Graphics g) {
+   public void paint(Graphics g) throws InterruptedException {
       int x = 0, y = 0, index = 0;
       Dimension d = main.getSize();
       FontMetrics fm;
@@ -247,6 +250,16 @@ public class GraphicsManager {
          y = 100;
 
          g.drawString(menuOptions[0], x, y);
+         
+         x = (d.width / 2) - (connect1.getWidth(main)/2);
+         y = (d.height / 2) - fm.getHeight();
+         
+         g.drawImage(connect1, x, y, main);
+         //Thread.sleep(20);
+         g.drawImage(connect2, x, y, main);
+         //Thread.sleep(20);
+         g.drawImage(connect3, x, y, main);
+         //Thread.sleep(20);
          break;
 
       case SKILL_LEVEL:
