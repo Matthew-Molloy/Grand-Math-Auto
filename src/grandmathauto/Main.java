@@ -249,7 +249,6 @@ public class Main extends Applet implements KeyListener, MouseListener {
 					game.result = new ArrayList<>();
 					game.mathSchemeTracker = 240;
 					Game.speed++;
-					Game.minSpeed++;
 				}
 			}
 			switch (e.getKeyCode()) {
