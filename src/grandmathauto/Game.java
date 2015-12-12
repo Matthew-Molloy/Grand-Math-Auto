@@ -62,10 +62,12 @@ public class Game implements Runnable {
    
    public ArrayList<ConeObstacle> obstacleList = new ArrayList<>();
 
+   // Game states
    public enum STATE {
       MAIN, GAME, GAMEOVER, OPTIONS, SCORES, CREDITS, CONNECTION, SKILL_LEVEL, QUIT, INSTRUCTIONS
    };
 
+   // Selecting options
    private STATE[] mainArr = { STATE.SKILL_LEVEL, STATE.OPTIONS, STATE.SCORES,
          STATE.CREDITS, STATE.QUIT };
 
@@ -73,9 +75,11 @@ public class Game implements Runnable {
 
    private int mainIndex = 0, optionIndex = 0, skillIndex = 0;
 
+   // Initial State
    private STATE State = STATE.CONNECTION;
    public int tempScore = 0;
    
+   // High score manager
    private HighscoreManager highScores = new HighscoreManager();
 
    public Game(Main main) {
@@ -465,6 +469,7 @@ minSpeed++;
       return State;
    }
 
+   // Set state depending on option selected
    public void setState(STATE newState) {
       State = newState;
       if (State == STATE.SCORES) {
@@ -499,6 +504,7 @@ minSpeed++;
    }
 
    public void setOptionIndex(int val) {
+   // Loops the option menu array
       if (val < 0) {
          optionIndex = 2;
       } else if (val > 2) {
@@ -509,6 +515,7 @@ minSpeed++;
    }
 
    public void setSkillIndex(int val) {
+      // Loops the skill level menu array
       if (val < 0) {
          skillIndex = 3;
       } else if (val > 3) {
@@ -518,6 +525,7 @@ minSpeed++;
       }
    }
 
+   // Getters & Setters for current selected options
    public STATE getMainArr(int index) {
       return mainArr[index];
    }
@@ -534,6 +542,7 @@ minSpeed++;
       return bgmOn;
    }
 
+   // Getters & setters for sound options
    public void setBgmOn(boolean bgmOn) {
       this.bgmOn = bgmOn;
    }
@@ -578,6 +587,7 @@ minSpeed++;
       }
    }
 
+   // Set level depending on selected levels
    public void setLevel() {
       switch (skillIndex) {
 
@@ -622,38 +632,47 @@ minSpeed++;
       }
    }
 
+   // Return if the score screen is being displayed
    public boolean isScoreDisplay() {
       return scoreDisplay;
    }
 
+   // Set boolean for score display
    public void setScoreDisplay(boolean scoreDisplay) {
       this.scoreDisplay = scoreDisplay;
    }
 
+   // Return if the credit screen is being displayed
    public boolean isCreditDisplay() {
       return creditDisplay;
    }
 
+   // Set boolean for credit display
    public void setCreditDisplay(boolean creditDisplay) {
       this.creditDisplay = creditDisplay;
    }
 
+   // Return if the options screen is being displayed
    public boolean isOptionsDisplay() {
       return optionsDisplay;
    }
 
+   // Set boolean for options display
    public void setOptionsDisplay(boolean optionsDisplay) {
       this.optionsDisplay = optionsDisplay;
    }
    
+   // Return if the skill level is being displayed
    public boolean isSkillDisplay() {
       return skillDisplay;
    }
 
+   // Set boolean for skill display
    public void setSkillDisplay(boolean skillDisplay) {
       this.skillDisplay = skillDisplay;
    }
    
+   // Returns if the options are selected
    public boolean isAddition() {
       return addition;
    }
@@ -666,10 +685,12 @@ minSpeed++;
       return multiplication;
    }
 
+  // Getter for high score manager
 public HighscoreManager getHighScores() {
 	return highScores;
 }
 
+ // Set high score manager
 public void setHighScores(HighscoreManager highScores) {
 	this.highScores = highScores;
 }

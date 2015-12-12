@@ -2,6 +2,7 @@ package grandmathauto;
 
 import java.util.Comparator;
 
+// Compares two score and sorts it
 public class ScoreComparator implements Comparator<Score> {
         public int compare(Score score1, Score score2) {
 

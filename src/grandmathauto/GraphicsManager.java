@@ -28,8 +28,8 @@ public class GraphicsManager {
    private int size;
    boolean displayed = false;
 
+   // Constructor
    public GraphicsManager(Main main) throws ClassNotFoundException {
-
 
       this.main = main;
 
@@ -215,7 +215,9 @@ public class GraphicsManager {
          }
          break;
 
+      // In score state
       case SCORES:
+         // Title
          g.setFont(font1);
          g.setColor(Color.white);
 
@@ -225,6 +227,7 @@ public class GraphicsManager {
 
          g.drawString(menuOptions[3], x, y);
 
+         // Display for scores
          x = (d.width/2);
          
          g.setFont(font2);
@@ -242,8 +245,10 @@ public class GraphicsManager {
         	 displayed = true;
          }
          break;
-
+         
+      // In credits state
       case CREDITS:
+         // Title
          g.setFont(font1);
          g.setColor(Color.white);
 
@@ -264,8 +269,10 @@ public class GraphicsManager {
             g.drawString(names[index], x, y);
          }
          break;
-
+      
+      // In connection state
       case CONNECTION:
+         // Title
          g.setFont(font1);
          g.setColor(Color.white);
 
@@ -275,16 +282,17 @@ public class GraphicsManager {
 
          g.drawString(menuOptions[0], x, y);
 
+         // Display connecting image
          x = (d.width / 2) - (connect.getWidth(main) / 2);
          y = (d.height / 2) - fm.getHeight();
 
          g.drawImage(connect, x, y, main);
-         
-         
 
          break;
 
+      // In skill level state
       case SKILL_LEVEL:
+         // Title
          g.setFont(font1);
          g.setColor(Color.white);
 
@@ -352,8 +360,11 @@ public class GraphicsManager {
             g.drawImage(leftArrow, 435, 360, main);
          }
          break;
+         
+      // In game over state
       case GAMEOVER:
-    	  g.setFont(font1);
+         // Title
+          g.setFont(font1);
           g.setColor(Color.white);
 
           fm = g.getFontMetrics();
@@ -362,6 +373,7 @@ public class GraphicsManager {
 
           g.drawString(gameOver[0], x, y);
           
+          // Display text for name and scores
           g.setFont(font2);
     	  
           g.drawString(gameOver[1], x - 150, 200);
@@ -370,7 +382,9 @@ public class GraphicsManager {
           g.drawString(game.playerName, x , 380);
           break;
 
+      // In instructions state
       case INSTRUCTIONS:
+         // Display title
     	  g.setFont(font1);
           g.setColor(Color.white);
           
@@ -384,6 +398,7 @@ public class GraphicsManager {
           g.setColor(Color.white);
           x += 5;
           
+          // Display instructions
           y += 100;
           g.drawString("Use enter to select a menu option", x, y);
           y += 50;
