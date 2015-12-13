@@ -17,226 +17,223 @@ import java.util.ArrayList;
 
 public class Main extends Applet implements KeyListener, MouseListener {
 
-   static final int windowWidth = 800;
-   static final int windowHeight = 480;
+	static final int windowWidth = 800;
+	static final int windowHeight = 480;
 
-   private Image image;
-   private URL base;
-   private Graphics second;
-   private Color bg = new Color(87, 172, 242);
-   public AudioClip bgm;
-   static public GraphicsManager graphicsManager;
+	private Image image;
+	private URL base;
+	private Graphics second;
+	private Color bg = new Color(87, 172, 242);
+	public AudioClip bgm;
+	static public GraphicsManager graphicsManager;
 
-   private Game game;
+	private Game game;
 
-   /**
-    * Called after applet loaded into system
-    */
-   @Override
-   public void init() {
-      /* Initialize application window */
-      setSize(windowWidth, windowHeight);
-      setBackground(bg);
-      setFocusable(true);
-      addKeyListener(this);
-      addMouseListener(this);
-      Frame frame = (Frame) this.getParent().getParent();
-      frame.setTitle("Grand Math Auto");
-      
-      
+	/**
+	 * Called after applet loaded into system
+	 */
+	@Override
+	public void init() {
+		/* Initialize application window */
+		setSize(windowWidth, windowHeight);
+		setBackground(bg);
+		setFocusable(true);
+		addKeyListener(this);
+		addMouseListener(this);
+		Frame frame = (Frame) this.getParent().getParent();
+		frame.setTitle("Grand Math Auto");
 
-      /* Initialize game bitmaps */
-      try {
-         base = getDocumentBase();
-      } catch (Exception e) {
-         e.printStackTrace();
-      }
-      bgm = getAudioClip(base, "bgm.au");
-      bgm.loop();
+		/* Initialize game bitmaps */
+		try {
+			base = getDocumentBase();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		bgm = getAudioClip(base, "bgm.au");
+		bgm.loop();
 
-      try {
-		graphicsManager = new GraphicsManager(this);
-	} catch (ClassNotFoundException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
+		try {
+			graphicsManager = new GraphicsManager(this);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		game = new Game(this);
 	}
-      game = new Game(this);
-   }
 
-   /**
-    * Called at start of applet execution
-    */
-   @Override
-   public void start() {
-      /* Start game */
-      Thread thread = new Thread(game);
-      thread.start();
-   }
+	/**
+	 * Called at start of applet execution
+	 */
+	@Override
+	public void start() {
+		/* Start game */
+		Thread thread = new Thread(game);
+		thread.start();
+	}
 
-   /**
-    * Updates graphics window. Utilizes double buffering
-    */
-   @Override
-   public void update(Graphics g) {
-      if (image == null) {
-         image = createImage(this.getWidth(), this.getHeight());
-         second = image.getGraphics();
-      }
+	/**
+	 * Updates graphics window. Utilizes double buffering
+	 */
+	@Override
+	public void update(Graphics g) {
+		if (image == null) {
+			image = createImage(this.getWidth(), this.getHeight());
+			second = image.getGraphics();
+		}
 
-      second.setColor(getBackground());
-      second.fillRect(0, 0, getWidth(), getHeight());
-      second.setColor(getForeground());
-      paint(second);
+		second.setColor(getBackground());
+		second.fillRect(0, 0, getWidth(), getHeight());
+		second.setColor(getForeground());
+		paint(second);
 
-      g.drawImage(image, 0, 0, this);
-   }
+		g.drawImage(image, 0, 0, this);
+	}
 
-   /**
-    * Paints graphics window
-    */
-   @Override
-   public void paint(Graphics g) {
-      graphicsManager.paint(g);
+	/**
+	 * Paints graphics window
+	 */
+	@Override
+	public void paint(Graphics g) {
+		graphicsManager.paint(g);
 
-   }
+	}
 
-   /**
-    * Handles key press events
-    */
-   @Override
-   public void keyPressed(KeyEvent e) {
-      int index;
+	/**
+	 * Handles key press events
+	 */
+	@Override
+	public void keyPressed(KeyEvent e) {
+		int index;
 
-      if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-         game.setFirstRun(true);
-         game.setState(STATE.MAIN);
-      }
+		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+			game.setFirstRun(true);
+			game.setState(STATE.MAIN);
+		}
 
-      if (game.getState() == STATE.MAIN) {
-         switch (e.getKeyCode()) {
-         case KeyEvent.VK_UP:
-            index = game.getMainIndex();
-            index--;
-            game.setMainIndex(index);
-            break;
-         case KeyEvent.VK_DOWN:
-            index = game.getMainIndex();
-            index++;
-            game.setMainIndex(index);
-            break;
-         case KeyEvent.VK_ENTER:
-            index = game.getMainIndex();
-            game.setState(game.getMainArr(index));
-            break;
-         case KeyEvent.VK_SPACE:
-            index = game.getMainIndex();
-            game.setState(game.getMainArr(index));
-            break;
-         }
-      }
+		if (game.getState() == STATE.MAIN) {
+			switch (e.getKeyCode()) {
+			case KeyEvent.VK_UP:
+				index = game.getMainIndex();
+				index--;
+				game.setMainIndex(index);
+				break;
+			case KeyEvent.VK_DOWN:
+				index = game.getMainIndex();
+				index++;
+				game.setMainIndex(index);
+				break;
+			case KeyEvent.VK_ENTER:
+				index = game.getMainIndex();
+				game.setState(game.getMainArr(index));
+				break;
+			case KeyEvent.VK_SPACE:
+				index = game.getMainIndex();
+				game.setState(game.getMainArr(index));
+				break;
+			}
+		}
 
-      if (game.getState() == STATE.SKILL_LEVEL) {
-         if (game.isSkillDisplay()) {
-            switch (e.getKeyCode()) {
-            case KeyEvent.VK_UP:
-               index = game.getSkillIndex();
-               index--;
-               game.setSkillIndex(index);
-               break;
-            case KeyEvent.VK_DOWN:
-               index = game.getSkillIndex();
-               index++;
-               game.setSkillIndex(index);
-               break;
-            case KeyEvent.VK_ENTER:
-               index = game.getSkillIndex();
-               game.setLevel();
-               break;
-            case KeyEvent.VK_SPACE:
-               index = game.getSkillIndex();
-               game.setLevel();
-               break;
-            case KeyEvent.VK_ESCAPE:
-               game.setState(STATE.MAIN);
-               break;
-            }
-         } else {
-            game.setSkillDisplay(true);
-         }
-      }
-         if (game.getState() == STATE.GAME) {
-            switch (e.getKeyCode()) {
-            case KeyEvent.VK_UP:
-               game.getPlayer().moveUp();
-               break;
-            case KeyEvent.VK_DOWN:
-               game.getPlayer().moveDown();
-               break;
-            case KeyEvent.VK_LEFT:
-               game.getPlayer().moveLeft();
-               break;
-            case KeyEvent.VK_RIGHT:
-               game.getPlayer().moveRight();
-               break;
-            case KeyEvent.VK_SPACE:
-               break;
-            }
-         }
+		if (game.getState() == STATE.SKILL_LEVEL) {
+			if (game.isSkillDisplay()) {
+				switch (e.getKeyCode()) {
+				case KeyEvent.VK_UP:
+					index = game.getSkillIndex();
+					index--;
+					game.setSkillIndex(index);
+					break;
+				case KeyEvent.VK_DOWN:
+					index = game.getSkillIndex();
+					index++;
+					game.setSkillIndex(index);
+					break;
+				case KeyEvent.VK_ENTER:
+					index = game.getSkillIndex();
+					game.setLevel();
+					break;
+				case KeyEvent.VK_SPACE:
+					index = game.getSkillIndex();
+					game.setLevel();
+					break;
+				case KeyEvent.VK_ESCAPE:
+					game.setState(STATE.MAIN);
+					break;
+				}
+			} else {
+				game.setSkillDisplay(true);
+			}
+		}
+		if (game.getState() == STATE.GAME) {
+			switch (e.getKeyCode()) {
+			case KeyEvent.VK_UP:
+				game.getPlayer().moveUp();
+				break;
+			case KeyEvent.VK_DOWN:
+				game.getPlayer().moveDown();
+				break;
+			case KeyEvent.VK_LEFT:
+				game.getPlayer().moveLeft();
+				break;
+			case KeyEvent.VK_RIGHT:
+				game.getPlayer().moveRight();
+				break;
+			case KeyEvent.VK_SPACE:
+				break;
+			}
+		}
 
-         if (game.getState() == STATE.OPTIONS) {
-            if (game.isOptionsDisplay()) {
-               switch (e.getKeyCode()) {
-               case KeyEvent.VK_UP:
-                  index = game.getOptionIndex();
-                  index--;
-                  game.setOptionIndex(index);
-                  break;
-               case KeyEvent.VK_DOWN:
-                  index = game.getOptionIndex();
-                  index++;
-                  game.setOptionIndex(index);
-                  break;
-               case KeyEvent.VK_ENTER:
-                  index = game.getOptionIndex();
-                  game.setOptions();
-                  break;
-               case KeyEvent.VK_SPACE:
-                  index = game.getOptionIndex();
-                  game.setOptions();
-               case KeyEvent.VK_ESCAPE:
-                  game.setState(STATE.MAIN);
-                  break;
-               }
-            } else {
-               game.setOptionsDisplay(true);
-            }
-         }
+		if (game.getState() == STATE.OPTIONS) {
+			if (game.isOptionsDisplay()) {
+				switch (e.getKeyCode()) {
+				case KeyEvent.VK_UP:
+					index = game.getOptionIndex();
+					index--;
+					game.setOptionIndex(index);
+					break;
+				case KeyEvent.VK_DOWN:
+					index = game.getOptionIndex();
+					index++;
+					game.setOptionIndex(index);
+					break;
+				case KeyEvent.VK_ENTER:
+					index = game.getOptionIndex();
+					game.setOptions();
+					break;
+				case KeyEvent.VK_SPACE:
+					index = game.getOptionIndex();
+					game.setOptions();
+				case KeyEvent.VK_ESCAPE:
+					game.setState(STATE.MAIN);
+					break;
+				}
+			} else {
+				game.setOptionsDisplay(true);
+			}
+		}
 
-         if (game.getState() == STATE.SCORES) {
-            if (game.isScoreDisplay()) {
-               game.setScoreDisplay(false);
-            } else {
-               game.setState(STATE.MAIN);
-            }
-         }
+		if (game.getState() == STATE.SCORES) {
+			if (game.isScoreDisplay()) {
+				game.setScoreDisplay(false);
+			} else {
+				game.setState(STATE.MAIN);
+			}
+		}
 
-         if (game.getState() == STATE.CREDITS) {
-            if (game.isCreditDisplay()) {
-               game.setCreditDisplay(false);
-            } else {
-               game.setState(STATE.MAIN);
-            }
-         }
-         
-         if (game.getState() == STATE.INSTRUCTIONS) {
-        	 if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-	             game.setState(STATE.MAIN);
-        	 }
-         }
-      }
-   
+		if (game.getState() == STATE.CREDITS) {
+			if (game.isCreditDisplay()) {
+				game.setCreditDisplay(false);
+			} else {
+				game.setState(STATE.MAIN);
+			}
+		}
 
-   /**
+		if (game.getState() == STATE.INSTRUCTIONS) {
+			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+				game.setState(STATE.MAIN);
+			}
+		}
+	}
+
+	/**
 	 * Handles key release events
 	 */
 	@Override
@@ -244,8 +241,8 @@ public class Main extends Applet implements KeyListener, MouseListener {
 		if (game.getState() == STATE.GAME) {
 			char c = e.getKeyChar();
 			if (game.mathProblemActive == true && c >= '0' && c <= '9') {
-				if( c == game.result.get(game.mathIndex)) {
-					if( game.result.size() - 1 == game.mathIndex ) {
+				if (c == game.result.get(game.mathIndex)) {
+					if (game.result.size() - 1 == game.mathIndex) {
 						game.problem = "Correct!";
 						game.mathSchemeTracker = 180;
 						if (Game.speed > Game.minSpeed) {
@@ -254,12 +251,10 @@ public class Main extends Applet implements KeyListener, MouseListener {
 						game.result = new ArrayList<>();
 						game.mathProblemActive = false;
 						System.out.println("Correct!");
-					}
-					else {
+					} else {
 						game.mathIndex++;
 					}
-				}
-				else {
+				} else {
 					game.problem = "Oops!";
 					game.mathProblemActive = false;
 					game.result = new ArrayList<>();
@@ -284,20 +279,20 @@ public class Main extends Applet implements KeyListener, MouseListener {
 				break;
 			}
 		}
-		
+
 		if (game.getState() == STATE.GAMEOVER) {
 			char c = e.getKeyChar();
 			if (c <= 'z' && c >= 'a') {
 				game.playerName += c;
 			}
-			
+
 			if (e.getKeyChar() == KeyEvent.VK_ENTER) {
 				game.getHighScores().addScore(game.playerName, game.score);
 				game.setState(STATE.MAIN);
 			}
-			
-			if(e.getKeyChar() == KeyEvent.VK_BACK_SPACE){
-				game.playerName = game.playerName.substring(0,game.playerName.length()-1);
+
+			if (e.getKeyChar() == KeyEvent.VK_BACK_SPACE) {
+				game.playerName = game.playerName.substring(0, game.playerName.length() - 1);
 			}
 		}
 	}
@@ -339,31 +334,31 @@ public class Main extends Applet implements KeyListener, MouseListener {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		System.out.println("(" + e.getX() + ", " + e.getY() + ")");
-		
+
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

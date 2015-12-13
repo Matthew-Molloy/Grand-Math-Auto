@@ -1,5 +1,8 @@
 package grandmathauto;
 
+/**
+ * Represents the cone obstacles in the racing portion of the game.
+ */
 public class ConeObstacle {
 	static final int width = 40;
 	static final int height = 40;
@@ -14,7 +17,7 @@ public class ConeObstacle {
 
 	public void update() {
 		speedY = Game.speed;
-		this.positionY += speedY; // Move cone downward
+		this.positionY += speedY; // Move cone downward each game tick
 	}
 
 	public int getPositionX() {
