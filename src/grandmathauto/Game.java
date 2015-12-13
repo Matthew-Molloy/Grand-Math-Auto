@@ -148,13 +148,13 @@ public class Game implements Runnable {
 
 				}
 
-				/* Update game object physics and repaint scene */
+				/* Update game objects and repaint scene */
 				player.update();
 				checkSensor();
 				bg1.update();
 				bg2.update();
-				handleObstacles();
-				handleMath();
+				handleObstacles(); // handles cone generation and collisions
+				handleMath(); // handles math question generation
 				main.repaint();
 
 				tempScore = (int) (elapsedTicks / 60);
@@ -227,6 +227,9 @@ public class Game implements Runnable {
 		}
 	}
 
+	/**
+	 * Convert sensor data to car movement
+	 */
 	public void checkSensor() {
 		Float data = server.currentData;
 		if (data != null) {
@@ -246,6 +249,9 @@ public class Game implements Runnable {
 		}
 	}
 
+	/**
+	 * Convert sensor data to menu navigation
+	 */
 	public void checkSensorMenu() {
 		Float data = server.currentData;
 		if (data != null) {
@@ -324,7 +330,7 @@ public class Game implements Runnable {
 			}
 			break;
 
-		case 3: // center opening
+		case 3: // 3 walls with openings
 			if (obstacleSchemeTracker == (int) (timeBetweenObstacles / 2)) {
 				int xPosition = Background.roadBarrierLeft;
 				ConeObstacle cone = new ConeObstacle(xPosition, -ConeObstacle.height);
@@ -389,6 +395,9 @@ public class Game implements Runnable {
 		obstacleSchemeTracker--;
 	}
 
+	/**
+	 * Handles generation of math problems
+	 */
 	private void handleMath() {
 		Random rand = new Random();
 

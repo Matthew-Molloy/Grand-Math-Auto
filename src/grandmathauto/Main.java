@@ -15,6 +15,9 @@ import java.awt.event.MouseListener;
 import java.net.URL;
 import java.util.ArrayList;
 
+/**
+ * Initializes applet and handles keyboard and mouse inputs.
+ */
 public class Main extends Applet implements KeyListener, MouseListener {
 
 	static final int windowWidth = 800;
@@ -238,10 +241,11 @@ public class Main extends Applet implements KeyListener, MouseListener {
 	 */
 	@Override
 	public void keyReleased(KeyEvent e) {
+		/* Handles numberical input for answering math problems */
 		if (game.getState() == STATE.GAME) {
 			char c = e.getKeyChar();
 			if (game.mathProblemActive == true && c >= '0' && c <= '9') {
-				if (c == game.result.get(game.mathIndex)) {
+				if (c == game.result.get(game.mathIndex)) { 
 					if (game.result.size() - 1 == game.mathIndex) {
 						game.problem = "Correct!";
 						game.mathSchemeTracker = 180;
